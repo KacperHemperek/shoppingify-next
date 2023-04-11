@@ -1,6 +1,7 @@
 import { api } from '@/utils/api';
 import type { RouterOutputs } from '@/utils/api';
 import React from 'react';
+import { TRPCClientErrorBase } from '@trpc/client';
 
 export type User = {
   name: string;
@@ -10,13 +11,13 @@ export type User = {
 
 type UserContextType = {
   user: RouterOutputs['user']['getUserFromSession'];
-  error: string | undefined | unknown;
+  userError: TRPCClientErrorBase<any> | null;
   loading: boolean;
 };
 
 export const UserContext = React.createContext<UserContextType>({
   user: null,
-  error: undefined,
+  userError: null,
   loading: false,
 });
 
@@ -35,7 +36,7 @@ export const UserContextProvider = ({
     <UserContext.Provider
       value={{
         user: user ?? null,
-        error,
+        userError: error,
         loading: isLoading,
       }}
     >

@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import FormSubmitButton from '@/components/FormSubmitButton';
 import { useRouter } from 'next/router';
 import { api } from '@/utils/api';
+import ErrorAlert from '@/components/ErrorAlert';
 
 type LoginFormInput = {
   email: string;
@@ -29,7 +30,11 @@ function LoginFormContent() {
   const router = useRouter();
   const utils = api.useContext();
 
-  const { mutateAsync: login } = api.user.login.useMutation({
+  const {
+    mutateAsync: login,
+    error: loginError,
+    isLoading: loggingIn,
+  } = api.user.login.useMutation({
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
     },
@@ -37,10 +42,9 @@ function LoginFormContent() {
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
-      // TODO Login
       await login(data);
       router.push('/');
-    } catch (error) {}
+    } catch (e) {}
   };
 
   return (
@@ -49,7 +53,7 @@ function LoginFormContent() {
         className="flex w-full flex-col "
         onSubmit={handleSubmit(onSubmit)}
       >
-        {/* <ErrorAlert text={(loginError as any)?.message} visible={isError} /> */}
+        <ErrorAlert text={loginError?.message ?? ''} visible={!!loginError} />
 
         <label htmlFor="email" className="label">
           <span className="mb-2 ">Email</span>
@@ -73,7 +77,7 @@ function LoginFormContent() {
           <FormSubmitButton
             buttonText="Login"
             isValid={isValid}
-            loading={false}
+            loading={loggingIn}
           />
         </div>
       </motion.form>
