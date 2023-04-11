@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Quicksand', sans-serif;
+}
+
+@layer components {
+  .input {
+    @apply border-neutral-light outline-primary placeholder:text-neutral-light focus:placeholder:text-primary rounded-xl border-2 p-4 outline-2 transition-all placeholder:text-sm disabled:bg-slate-100 disabled:text-slate-500 disabled:outline-none;
+  }
+
+  .label {
+    @apply text-neutral-dark focus-within:text-primary flex w-full flex-col text-sm font-medium transition-all;
+  }
+
+  .submit-button {
+    @apply bg-primary hover:shadow-primary/30 disabled:bg-primary/60 flex w-full  items-center justify-center self-center rounded-xl p-4 font-semibold text-white transition-all hover:scale-[101%] hover:shadow-md disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none;
+  }
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-primary/50 transition-all;
+  }
+}
+
+.firebase-emulator-warning {
+  display: none;
+}
