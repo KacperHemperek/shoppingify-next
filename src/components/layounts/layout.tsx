@@ -4,7 +4,7 @@ import Loadingpage from '@/components/layounts/LoadingPage';
 import SideBar from '@/components/SideBar';
 import NavBar from '@/components/NavBar';
 import { useRouter } from 'next/router';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 function RouteGuard({ children }: PropsWithChildren) {
   const router = useRouter();

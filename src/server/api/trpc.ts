@@ -15,7 +15,7 @@
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
-import { serialize, CookieSerializeOptions } from 'cookie';
+import { serialize, type CookieSerializeOptions } from 'cookie';
 
 import { prisma } from '@/server/db';
 
@@ -98,8 +98,7 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
-import { NextResponse } from 'next/server';
-import { NextApiResponse } from 'next';
+import { type NextApiResponse } from 'next';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

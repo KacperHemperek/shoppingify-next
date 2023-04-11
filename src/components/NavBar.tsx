@@ -45,7 +45,6 @@ function NavOption({ icon, to }: { to: string; icon: React.ReactNode }) {
 }
 
 function NavBar() {
-  const router = useRouter();
   const { user } = useUser();
   // const { mutateAsync } = useLogout();
   const utils = api.useContext();

@@ -1,11 +1,11 @@
-import { motion, AnimatePresence, AnimationProps } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { AnimationProps } from 'framer-motion';
 import { useState } from 'react';
 import useMeasure from 'react-use-measure';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormSubmitButton from '@/components/FormSubmitButton';
-import ErrorAlert from '@/components/ErrorAlert';
 import { useRouter } from 'next/router';
 import { api } from '@/utils/api';
 
@@ -113,6 +113,7 @@ function RegisterFormContent() {
     try {
       //TODO: Register method from trpc
       // await signUp(data);
+      console.log(data);
       router.push('/');
     } catch (err) {
       // TODO: Handle Register errors

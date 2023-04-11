@@ -1,6 +1,7 @@
-import React, { PropsWithChildren, useCallback, useState } from 'react';
-import { ShowAddItemOptions } from '@/components/layounts/layout';
-import { Item } from '@/types/Item.interface';
+import React, { useCallback, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import type { ShowAddItemOptions } from '@/components/layounts/layout';
+import type { Item } from '@/types/Item.interface';
 
 type SidebarContextType = {
   item: Item | null;
@@ -16,9 +17,12 @@ type SidebarContextType = {
 export const SidebarContext = React.createContext<SidebarContextType>({
   item: null,
   categoryId: null,
+  /* eslint-disable  @typescript-eslint/no-empty-function */
   show: () => {},
+  /* eslint-disable  @typescript-eslint/no-empty-function */
   hide: () => {},
   sidebarOption: undefined,
+  /* eslint-disable  @typescript-eslint/no-empty-function */
   setSidebarOption: () => {},
 });
 
@@ -35,7 +39,7 @@ function SidebarContextProvider({ children }: PropsWithChildren) {
     setSidebarOption('itemInfo');
   }, []);
 
-  const hide = (mobile: boolean = false) => {
+  const hide = (mobile = false) => {
     setItem(null);
     setSidebarOption(mobile ? undefined : 'cart');
   };

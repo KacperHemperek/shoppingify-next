@@ -4,7 +4,6 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
-import { useUser } from '@/hooks/useUser';
 import DropDown from '@/components/DropDown';
 import useSidebar from '@/hooks/useSidebar';
 
@@ -18,7 +17,7 @@ function BackButton({ onClick }: { onClick: () => void }) {
 }
 
 function ItemInfo() {
-  const { item, categoryId, setSidebarOption } = useSidebar();
+  const { item, setSidebarOption } = useSidebar();
 
   const { hide } = useSidebar();
 
@@ -86,11 +85,6 @@ function useDropdownOptions() {
   return {};
 }
 
-function useAddItem() {
-  const { user } = useUser();
-  //TODO: add item to database
-}
-
 const AddItemSchema = z.object({
   name: z.string().min(1, 'Required'),
   desc: z.string().min(1, 'Required'),
@@ -121,10 +115,10 @@ function AddItemForm() {
   // const { mutateAsync: addItem, isLoading, error } = useAddItem();
 
   const addNewItem = async (data: AddItemType) => {
-    const item: { name: string; desc: string } = {
-      name: data.name,
-      desc: data.desc,
-    };
+    // const item: { name: string; desc: string } = {
+    //   name: data.name,
+    //   desc: data.desc,
+    // };
     //TODO: update options
     // const categoryId = options?.find(
     //   (option) => option.value.toLowerCase() === data.category.toLowerCase()
@@ -136,7 +130,7 @@ function AddItemForm() {
     //   categoryName:
     //     data.category.trim() === '' ? undefined : data.category.trim(),
     // });
-
+    console.log(data);
     reset();
     setSidebarOption('cart');
   };
@@ -259,7 +253,7 @@ function DesktopSideBar() {
 }
 
 function MobileSideBar() {
-  const { sidebarOption, item, categoryId } = useSidebar();
+  const { sidebarOption, item } = useSidebar();
 
   return (
     <motion.div
@@ -300,7 +294,7 @@ function SideBar() {
     if (window.innerWidth > 768) {
       setSidebarOption('cart');
     }
-  }, []);
+  }, [setSidebarOption]);
 
   return (
     <>

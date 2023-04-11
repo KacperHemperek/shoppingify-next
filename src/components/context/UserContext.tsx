@@ -1,5 +1,5 @@
-import { api, RouterOutputs } from '@/utils/api';
-import { useQuery } from '@tanstack/react-query';
+import { api } from '@/utils/api';
+import type { RouterOutputs } from '@/utils/api';
 import React from 'react';
 
 export type User = {
