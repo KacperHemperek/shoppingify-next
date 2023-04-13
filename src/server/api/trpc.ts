@@ -99,7 +99,7 @@ import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 import { type NextApiResponse } from 'next';
-import { User } from '@prisma/client';
+import { type User } from '@prisma/client';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

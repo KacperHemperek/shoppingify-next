@@ -12,7 +12,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <UserContextProvider>
       <SidebarContextProvider>
         <Layout>
-          <Component {...pageProps} />;
+          <Component {...pageProps} />
         </Layout>
       </SidebarContextProvider>
     </UserContextProvider>

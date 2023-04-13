@@ -1,7 +1,7 @@
 import { api } from '@/utils/api';
 import type { RouterOutputs } from '@/utils/api';
 import React from 'react';
-import { TRPCClientErrorBase } from '@trpc/client';
+import type { TRPCClientErrorBase } from '@trpc/client';
 
 export type User = {
   name: string;
@@ -11,6 +11,7 @@ export type User = {
 
 type UserContextType = {
   user: RouterOutputs['user']['getUserFromSession'];
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   userError: TRPCClientErrorBase<any> | null;
   loading: boolean;
 };

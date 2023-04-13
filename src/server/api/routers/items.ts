@@ -1,5 +1,5 @@
 import { createTRPCRouter, userProcedure } from '@/server/api/trpc';
-import { CategoryType } from '@/types/Categoy.interface';
+import type { CategoryType } from '@/types/Categoy.interface';
 import type { Item } from '@/types/Item.interface';
 
 export const itemRouter = createTRPCRouter({
