@@ -99,6 +99,7 @@ import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 import { type NextApiResponse } from 'next';
+import { User } from '@prisma/client';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -136,3 +137,52 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+const getUserInContextMiddleware = t.middleware(async ({ ctx, next }) => {
+  const sessionId = ctx.cookies.session;
+
+  if (!sessionId) {
+    return next({
+      ctx: {
+        ...ctx,
+        user: null as User | null,
+      },
+    });
+  }
+
+  try {
+    const session = await ctx.prisma.session.findFirst({
+      where: { id: Number(sessionId) },
+    });
+
+    if (!session) {
+      return next({
+        ctx: {
+          ...ctx,
+          user: null as User | null,
+        },
+      });
+    }
+
+    const user = await ctx.prisma.user.findFirst({
+      where: { id: session.userId },
+    });
+
+    return next({
+      ctx: {
+        ...ctx,
+        user,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return next({
+      ctx: {
+        ...ctx,
+        user: null as User | null,
+      },
+    });
+  }
+});
+
+export const userProcedure = publicProcedure.use(getUserInContextMiddleware);
