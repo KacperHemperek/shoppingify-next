@@ -12,11 +12,12 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @unique @default(autoincrement())
-  name     String    @db.VarChar(255)
-  email    String    @unique
-  password String
-  session  Session[]
+  id         Int        @id @unique @default(autoincrement())
+  name       String     @db.VarChar(255)
+  email      String     @unique
+  password   String
+  sessions   Session[]
+  categories Category[]
 
   @@index([id])
 }
@@ -27,4 +28,20 @@ model Session {
   userId Int
 
   @@index([id])
+}
+
+model Category {
+  id     Int    @id @unique @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  name   String
+  items  Item[]
+}
+
+model Item {
+  id         Int      @id @unique @default(autoincrement())
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  name       String
+  desc       String
 }
