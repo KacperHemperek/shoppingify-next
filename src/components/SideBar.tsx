@@ -1,9 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
-import { z } from 'zod';
 import DropDown from '@/components/DropDown';
 import useSidebar from '@/hooks/useSidebar';
 import { api } from '@/utils/api';
@@ -80,32 +78,18 @@ function ItemInfo() {
   );
 }
 
-function useDropdownOptions() {
-  //TODO: get dropdown options from
-
-  return {};
-}
-
 export type AddItemType = {
   name: string;
   desc: string;
   category: string;
 };
 
-//FIXME: isValid not updating only on category change
 function AddItemForm() {
   const { setSidebarOption } = useSidebar();
 
   const methods = useForm<AddItemType>();
 
-  const {
-    register,
-    reset,
-    handleSubmit,
-    setValue,
-    formState: { isValid },
-    watch,
-  } = methods;
+  const { register, reset, handleSubmit, setValue, watch } = methods;
 
   const watchCategory = watch('category');
   const { data: dropdownOptions } =
@@ -113,15 +97,12 @@ function AddItemForm() {
 
   const utils = api.useContext();
 
-  const {
-    mutateAsync: createItemMutation,
-    isLoading: creatingItem,
-    error,
-  } = api.item.addItem.useMutation({
-    onSuccess: () => {
-      utils.item.getAll.invalidate();
-    },
-  });
+  const { mutateAsync: createItemMutation, isLoading: creatingItem } =
+    api.item.addItem.useMutation({
+      onSuccess: () => {
+        utils.item.getAll.invalidate();
+      },
+    });
 
   const addNewItem = async (data: AddItemType) => {
     try {
@@ -138,8 +119,8 @@ function AddItemForm() {
       console.log(data);
       reset();
       setSidebarOption('cart');
-    } catch (e: any) {
-      console.log(e?.message);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -181,7 +162,7 @@ function AddItemForm() {
             />
           </label>
           <label className="label mb-2">Category</label>
-          {/* TODO: pass options tp dropdown */}
+
           <DropDown
             placeholder="Enter a category"
             options={dropdownOptions ?? []}
