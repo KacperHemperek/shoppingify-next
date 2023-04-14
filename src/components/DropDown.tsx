@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import type { UseFormRegisterReturn, UseFormSetValue } from 'react-hook-form';
 
 export type DropdownOptionType = {
-  id: string;
-  value: string;
+  id: number;
+  name: string;
 };
 const DropDown = ({
   options,
@@ -37,7 +37,7 @@ const DropDown = ({
     },
     items: options,
     itemToString(item) {
-      return item?.value ?? '';
+      return item?.name ?? '';
     },
   });
 
@@ -47,7 +47,7 @@ const DropDown = ({
     }
 
     return options.filter((option) =>
-      option.value.toLowerCase().includes(value.toLowerCase())
+      option.name.toLowerCase().includes(value.toLowerCase())
     );
   }, [value, options]);
 
@@ -93,7 +93,7 @@ const DropDown = ({
             key={option.id}
             {...getItemProps({ item: option, index: idx })}
           >
-            {option.value}
+            {option.name}
           </li>
         ))}
       </ul>

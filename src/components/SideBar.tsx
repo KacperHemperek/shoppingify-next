@@ -6,6 +6,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import DropDown from '@/components/DropDown';
 import useSidebar from '@/hooks/useSidebar';
+import { api } from '@/utils/api';
 
 function BackButton({ onClick }: { onClick: () => void }) {
   return (
@@ -85,21 +86,17 @@ function useDropdownOptions() {
   return {};
 }
 
-const AddItemSchema = z.object({
-  name: z.string().min(1, 'Required'),
-  desc: z.string().min(1, 'Required'),
-  category: z.string().min(1, 'Required'),
-});
-
-export type AddItemType = z.infer<typeof AddItemSchema>;
+export type AddItemType = {
+  name: string;
+  desc: string;
+  category: string;
+};
 
 //FIXME: isValid not updating only on category change
 function AddItemForm() {
   const { setSidebarOption } = useSidebar();
 
-  const methods = useForm<AddItemType>({
-    resolver: zodResolver(AddItemSchema),
-  });
+  const methods = useForm<AddItemType>();
 
   const {
     register,
@@ -111,28 +108,39 @@ function AddItemForm() {
   } = methods;
 
   const watchCategory = watch('category');
-  const {} = useDropdownOptions();
-  // const { mutateAsync: addItem, isLoading, error } = useAddItem();
+  const { data: dropdownOptions } =
+    api.category.getCategoriesForDropdown.useQuery();
+
+  const utils = api.useContext();
+
+  const {
+    mutateAsync: createItemMutation,
+    isLoading: creatingItem,
+    error,
+  } = api.item.addItem.useMutation({
+    onSuccess: () => {
+      utils.item.getAll.invalidate();
+    },
+  });
 
   const addNewItem = async (data: AddItemType) => {
-    // const item: { name: string; desc: string } = {
-    //   name: data.name,
-    //   desc: data.desc,
-    // };
-    //TODO: update options
-    // const categoryId = options?.find(
-    //   (option) => option.value.toLowerCase() === data.category.toLowerCase()
-    // )?.id;
+    try {
+      const categoryId = dropdownOptions?.find(
+        (option) => option.name.toLowerCase() === data.category.toLowerCase()
+      )?.id;
+      await createItemMutation({
+        categoryName: data.category.trim(),
+        desc: data.desc.trim(),
+        name: data.name.trim(),
+        categoryId,
+      });
 
-    // await addItem({
-    //   item,
-    //   categoryId,
-    //   categoryName:
-    //     data.category.trim() === '' ? undefined : data.category.trim(),
-    // });
-    console.log(data);
-    reset();
-    setSidebarOption('cart');
+      console.log(data);
+      reset();
+      setSidebarOption('cart');
+    } catch (e: any) {
+      console.log(e?.message);
+    }
   };
 
   return (
@@ -159,7 +167,7 @@ function AddItemForm() {
               type="text"
               className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
               placeholder={'Enter an name'}
-              disabled={false}
+              disabled={creatingItem}
             />
           </label>
           <label htmlFor="email" className="label mb-6">
@@ -169,18 +177,18 @@ function AddItemForm() {
               rows={3}
               className=" resize-none rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
               placeholder={'Enter an note'}
-              disabled={false}
+              disabled={creatingItem}
             />
           </label>
           <label className="label mb-2">Category</label>
           {/* TODO: pass options tp dropdown */}
           <DropDown
             placeholder="Enter a category"
-            options={[]}
+            options={dropdownOptions ?? []}
             setValue={setValue}
             inputName="category"
             value={watchCategory}
-            disabled={false}
+            disabled={creatingItem}
             register={register('category')}
           />
         </div>
@@ -192,13 +200,14 @@ function AddItemForm() {
             onClick={() => {
               setSidebarOption('cart');
             }}
+            disabled={creatingItem}
           >
             Cancel
           </button>
           <button
             type="submit"
             className="submit-button px-6 py-4"
-            disabled={!isValid}
+            disabled={creatingItem}
           >
             Save
           </button>
