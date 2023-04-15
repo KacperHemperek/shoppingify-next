@@ -5,6 +5,8 @@ import { useForm, FormProvider } from 'react-hook-form';
 import DropDown from '@/components/DropDown';
 import useSidebar from '@/hooks/useSidebar';
 import { api } from '@/utils/api';
+import { useAppSelector } from '@/redux/hooks';
+import { getCategories } from '@/redux/slices/newListSlice';
 
 function BackButton({ onClick }: { onClick: () => void }) {
   return (
@@ -246,9 +248,7 @@ function DesktopSideBar() {
         >
           {sidebarOption === 'addItem' && <AddItemForm key="addItem" />}
           {sidebarOption === 'cart' && (
-            <div className="flex h-full bg-primary-light" key={'cart'}>
-              Cart
-            </div>
+            <div className="flex h-full bg-primary-light" key={'cart'}></div>
           )}
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />

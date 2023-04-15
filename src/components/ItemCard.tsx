@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import useSidebar from '@/hooks/useSidebar';
 import { type Item } from '@/types/Item.interface';
+import { useAppDispatch } from '@/redux/hooks';
+import { addItem } from '@/redux/slices/newListSlice';
 
 const ItemCard = React.forwardRef(
   (
@@ -15,10 +17,18 @@ const ItemCard = React.forwardRef(
   ) => {
     const { show } = useSidebar();
     const [hover, setHover] = useState(false);
+    const dispatch = useAppDispatch();
 
     const addItemToList = (e: React.MouseEvent) => {
       e.stopPropagation();
       console.log('add item ' + item.name);
+      dispatch(
+        addItem({
+          categoryName: item.category,
+          itemName: item.name,
+          itemId: item.id,
+        })
+      );
     };
 
     return (
