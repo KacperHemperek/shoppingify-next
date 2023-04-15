@@ -45,37 +45,92 @@ export const userRouter = createTRPCRouter({
     }
   }),
   logout: publicProcedure.mutation(async ({ ctx }) => {
-    const sessionId = ctx.cookies.session;
+    try {
+      const sessionId = ctx.cookies.session;
 
-    if (!sessionId) {
-      return;
+      if (!sessionId) {
+        return;
+      }
+
+      await ctx.prisma.session.delete({
+        where: { id: Number(sessionId) },
+      });
+
+      ctx.setCookie('session', '', { maxAge: -1 });
+    } catch (e) {
+      console.error(e);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Something went wrong',
+        cause: e,
+      });
     }
-
-    await ctx.prisma.session.delete({
-      where: { id: Number(sessionId) },
-    });
-
-    ctx.setCookie('session', '', { maxAge: -1 });
   }),
 
   login: publicProcedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findFirst({
-        where: { email: input.email },
-      });
+      try {
+        const user = await ctx.prisma.user.findFirst({
+          where: { email: input.email },
+        });
 
-      if (!user || user.password !== input.password) {
+        if (!user || user.password !== input.password) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Wrong password or email',
+          });
+        }
+
+        const newSession = await ctx.prisma.session.create({
+          data: { userId: user.id },
+        });
+
+        ctx.setCookie('session', newSession.id);
+      } catch (e) {
+        console.error(e);
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Wrong password or email',
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+          cause: e,
         });
       }
+    }),
+  signIn: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string().email('Invalid email'),
+        password: z
+          .string()
+          .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/gi,
+            'Invalid password'
+          ),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const newUser = await ctx.prisma.user.create({
+          data: {
+            email: input.email,
+            name: input.name,
+            password: input.password,
+          },
+        });
 
-      const newSession = await ctx.prisma.session.create({
-        data: { userId: user.id },
-      });
+        const newSession = await ctx.prisma.session.create({
+          data: { userId: newUser.id },
+        });
 
-      ctx.setCookie('session', newSession.id);
+        ctx.setCookie('session', newSession.id);
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+          cause: e,
+        });
+      }
     }),
 });

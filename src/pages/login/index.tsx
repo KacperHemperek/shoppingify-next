@@ -1,31 +1,26 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { AnimationProps } from 'framer-motion';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import useMeasure from 'react-use-measure';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import FormSubmitButton from '@/components/FormSubmitButton';
 import { useRouter } from 'next/router';
 import { api } from '@/utils/api';
 import ErrorAlert from '@/components/ErrorAlert';
+import { type TRPCClientErrorLike } from '@trpc/client';
 
 type LoginFormInput = {
   email: string;
   password: string;
 };
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
 function LoginFormContent() {
   const {
     register,
     handleSubmit,
-    formState: { isValid },
-  } = useForm<LoginFormInput>({ resolver: zodResolver(loginSchema) });
+    formState: { isValid: isLoginFormValid },
+    reset: resetLoginForm,
+  } = useForm<LoginFormInput>();
 
   const router = useRouter();
   const utils = api.useContext();
@@ -38,14 +33,22 @@ function LoginFormContent() {
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
     },
+    onError: () => {
+      resetLoginForm();
+    },
   });
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
       await login(data);
       router.push('/');
-    } catch (e) {}
+    } catch (_) {}
   };
+
+  const formatedError = useMemo(
+    () => formatErrorMessage(loginError) ?? 'Unknown Error Ocurred',
+    [loginError]
+  );
 
   return (
     <>
@@ -53,7 +56,7 @@ function LoginFormContent() {
         className="flex w-full flex-col "
         onSubmit={handleSubmit(onSubmit)}
       >
-        <ErrorAlert text={loginError?.message ?? ''} visible={!!loginError} />
+        <ErrorAlert text={formatedError} visible={!!loginError} />
 
         <label htmlFor="email" className="label">
           <span className="mb-2 ">Email</span>
@@ -62,6 +65,7 @@ function LoginFormContent() {
             className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
             placeholder={'Enter an email'}
             {...register('email')}
+            disabled={loggingIn}
           />
         </label>
         <label htmlFor="email" className="label mb-4">
@@ -71,12 +75,13 @@ function LoginFormContent() {
             className="w-full rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
             placeholder={'Enter a password'}
             {...register('password')}
+            disabled={loggingIn}
           />
         </label>
         <div className="mt-6">
           <FormSubmitButton
             buttonText="Login"
-            isValid={isValid}
+            isValid={isLoginFormValid}
             loading={loggingIn}
           />
         </div>
@@ -85,63 +90,76 @@ function LoginFormContent() {
   );
 }
 
-interface RegisterFormInputs {
+type RegisterFormInputs = {
   name: string;
   email: string;
   password: string;
-}
+};
 
-const registerSchema = z.object({
-  name: z.string().min(3, 'Name must have at least 3 characters').trim(),
-  email: z
-    .string()
-    .min(5, 'Email must be at least 5 characters')
-    .email('This field must be a valid email')
-    .trim(),
-  password: z
-    .string()
-    .min(8)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/gi),
-});
+function formatErrorMessage(
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  error: TRPCClientErrorLike<any> | null
+): string | undefined {
+  if (error && Array.isArray(JSON.parse(error.message))) {
+    return JSON.parse(error.message)[0].message;
+  }
+  return error?.message;
+}
 
 function RegisterFormContent() {
   const {
     register,
     handleSubmit,
+    reset: resetLoginForm,
+
     formState: { isValid },
-  } = useForm<RegisterFormInputs>({ resolver: zodResolver(registerSchema) });
+  } = useForm<RegisterFormInputs>();
+
+  const utils = api.useContext();
+
+  const {
+    mutateAsync: signUp,
+    isLoading: signingUp,
+    error: signUpError,
+  } = api.user.signIn.useMutation({
+    onSuccess: () => {
+      utils.user.getUserFromSession.invalidate();
+    },
+    onError: () => {
+      resetLoginForm();
+    },
+  });
 
   const router = useRouter();
 
   const onSubmit = async (data: RegisterFormInputs) => {
     try {
-      //TODO: Register method from trpc
-      // await signUp(data);
-      console.log(data);
+      await signUp(data);
       router.push('/');
-    } catch (err) {
-      // TODO: Handle Register errors
-    }
+    } catch (_) {}
   };
+
+  const error = useMemo(
+    () => formatErrorMessage(signUpError) ?? 'Unknown error occured',
+    [signUpError]
+  );
 
   return (
     <form
       className="flex w-full flex-col space-y-6"
       onSubmit={handleSubmit(onSubmit)}
     >
-      {/* <ErrorAlert
-        visible={isError && error instanceof FirebaseError}
-        text={formatFireabseAuthError(error as FirebaseError)}
-      /> */}
+      <ErrorAlert visible={Boolean(signUpError?.message)} text={error} />
 
       <label htmlFor="email" className="label">
         Email
         <span className="mb-2"></span>
         <input
-          type="email"
+          type="text"
           className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
           placeholder={'Enter an email'}
           {...register('email', { required: true })}
+          disabled={signingUp}
         />
       </label>
       <label htmlFor="name" className="label">
@@ -152,6 +170,7 @@ function RegisterFormContent() {
           className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
           placeholder={'Enter your name'}
           {...register('name', { required: true })}
+          disabled={signingUp}
         />
       </label>
       <label htmlFor="password" className="label mb-4">
@@ -162,12 +181,13 @@ function RegisterFormContent() {
           className="w-full rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
           placeholder={'Enter a password'}
           {...register('password', { required: true })}
+          disabled={signingUp}
         />
       </label>
       <FormSubmitButton
         buttonText="Register"
+        loading={signingUp}
         isValid={isValid}
-        loading={false}
       />
     </form>
   );

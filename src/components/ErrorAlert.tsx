@@ -9,22 +9,23 @@ function ErrorAlert({ text, visible }: { text: string; visible: boolean }) {
           key="errorMessage"
           initial={{
             opacity: 0,
-            height: 0,
+            // height: 0,
           }}
           animate={{
             opacity: 1,
-            height: 'auto',
+            // height: 'auto',
           }}
           exit={{
             opacity: 0,
-            height: 0,
+            // height: 0,
           }}
           transition={{
             duration: 0.25,
+            delay: 0.15,
           }}
-          className="text-neutral-dark mb-6 flex w-full  items-center space-x-3 font-semibold"
+          className="mb-6 flex w-full items-center  space-x-3 font-semibold text-neutral-dark"
         >
-          <div className="text-neutral-extralight flex w-full items-center space-x-3 rounded-xl  bg-red-500 p-2 font-semibold ">
+          <div className="flex w-full items-center space-x-3 rounded-xl bg-red-500  p-2 font-semibold text-neutral-extralight ">
             <XCircleIcon className="h-9 w-9 " />
             <div className="flex w-full flex-col ">
               <h4 className=" -mb-1 text-lg  font-bold">Error</h4>
