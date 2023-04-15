@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { CategoryType } from '@/types/Categoy.interface';
 import ItemCard from '@/components/ItemCard';
+import useSidebar from '@/hooks/useSidebar';
 
 function Category({ items, name, id }: CategoryType) {
   return (
@@ -41,8 +42,21 @@ function Category({ items, name, id }: CategoryType) {
 }
 
 function CategoriesList({ categories }: { categories?: CategoryType[] }) {
+  const { setSidebarOption } = useSidebar();
   if (!categories || !categories?.length) {
-    return <div>Sorry no data was found</div>;
+    return (
+      <div>
+        <h2 className="my-6 text-lg font-medium text-neutral-light">
+          No items were found{' '}
+          <a
+            className="cursor-pointer font-bold text-primary underline"
+            onClick={() => setSidebarOption('addItem')}
+          >
+            add item
+          </a>
+        </h2>
+      </div>
+    );
   }
 
   return (
@@ -54,7 +68,7 @@ function CategoriesList({ categories }: { categories?: CategoryType[] }) {
         },
       }}
     >
-      {categories.map((category) => (
+      {categories?.map((category) => (
         <Category key={category.name} {...category} />
       ))}
     </motion.div>
