@@ -163,7 +163,7 @@ function AddItemForm() {
             <input
               {...register('name')}
               type="text"
-              className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+              className=" input"
               placeholder={'Enter an name'}
               disabled={creatingItem}
             />
@@ -173,7 +173,7 @@ function AddItemForm() {
             <textarea
               {...register('desc')}
               rows={3}
-              className=" resize-none rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+              className="input"
               placeholder={'Enter an note'}
               disabled={creatingItem}
             />

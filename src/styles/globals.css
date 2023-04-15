@@ -12,15 +12,15 @@
 
 @layer components {
   .input {
-    @apply border-neutral-light outline-primary placeholder:text-neutral-light focus:placeholder:text-primary rounded-xl border-2 p-4 outline-2 transition-all placeholder:text-sm disabled:bg-slate-100 disabled:text-slate-500 disabled:outline-none;
+    @apply rounded-xl border-2 border-neutral-light p-4 text-base text-neutral-dark outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light disabled:bg-slate-100 disabled:text-slate-500 disabled:outline-none;
   }
 
   .label {
-    @apply text-neutral-dark focus-within:text-primary flex w-full flex-col text-sm font-medium transition-all;
+    @apply flex w-full flex-col text-sm font-medium text-neutral-dark transition-all focus-within:text-primary;
   }
 
   .submit-button {
-    @apply bg-primary hover:shadow-primary/30 disabled:bg-primary/60 flex w-full  items-center justify-center self-center rounded-xl p-4 font-semibold text-white transition-all hover:scale-[101%] hover:shadow-md disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none;
+    @apply flex w-full items-center justify-center self-center  rounded-xl bg-primary p-4 font-semibold text-white transition-all hover:scale-[101%] hover:shadow-md hover:shadow-primary/30 disabled:cursor-not-allowed disabled:bg-primary/60 disabled:hover:scale-100 disabled:hover:shadow-none;
   }
 }
 
