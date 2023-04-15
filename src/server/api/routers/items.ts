@@ -35,7 +35,7 @@ export const itemRouter = createTRPCRouter({
       return [];
     }
   }),
-  addItem: userProcedure
+  add: userProcedure
     .input(
       z.object({
         name: z.string().min(2, 'Name must have least two letters'),
@@ -79,5 +79,26 @@ export const itemRouter = createTRPCRouter({
           cause: e,
         });
       }
+    }),
+  delete: userProcedure
+    .input(z.object({ itemId: z.number(), categoryName: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.user) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+      try {
+        const category = await ctx.prisma.category.findFirst({
+          where: { userId: ctx.user.id, name: input.categoryName },
+          select: { id: true, items: true },
+        });
+
+        if (category?.items && category?.items.length <= 1) {
+          await ctx.prisma.item.delete({ where: { id: input.itemId } });
+          await ctx.prisma.category.delete({ where: { id: category.id } });
+          return;
+        }
+
+        await ctx.prisma.item.delete({ where: { id: input.itemId } });
+      } catch (e) {}
     }),
 });

@@ -17,8 +17,27 @@ function BackButton({ onClick }: { onClick: () => void }) {
 
 function ItemInfo() {
   const { item, setSidebarOption } = useSidebar();
+  const utils = api.useContext();
+
+  const { mutateAsync: deleteItemMutation } = api.item.delete.useMutation({
+    onSuccess: () => {
+      utils.item.getAll.invalidate();
+    },
+  });
 
   const { hide } = useSidebar();
+
+  if (!item) {
+    return <div>There was a problem retrieving item</div>;
+  }
+
+  async function deleteItem(itemId: number, categoryName: string) {
+    try {
+      await deleteItemMutation({ itemId, categoryName });
+
+      setSidebarOption('cart');
+    } catch (e) {}
+  }
 
   return (
     <div className="absolute left-0 top-0 flex h-screen w-full max-w-md flex-col justify-between bg-white px-6 py-8 xl:p-8">
@@ -60,9 +79,7 @@ function ItemInfo() {
         <button
           type="button"
           className="hidden rounded-xl px-6 py-4 font-medium shadow-danger/30 transition hover:scale-[101%] hover:bg-danger hover:text-white hover:shadow-md md:block"
-          onClick={async () => {
-            setSidebarOption('cart');
-          }}
+          onClick={() => deleteItem(item.id, item.category)}
         >
           delete
         </button>
@@ -98,7 +115,7 @@ function AddItemForm() {
   const utils = api.useContext();
 
   const { mutateAsync: createItemMutation, isLoading: creatingItem } =
-    api.item.addItem.useMutation({
+    api.item.add.useMutation({
       onSuccess: () => {
         utils.item.getAll.invalidate();
       },
