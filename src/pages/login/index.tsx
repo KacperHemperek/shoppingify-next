@@ -62,7 +62,7 @@ function LoginFormContent() {
           <span className="mb-2 ">Email</span>
           <input
             type="text"
-            className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+            className="input"
             placeholder={'Enter an email'}
             {...register('email')}
             disabled={loggingIn}
@@ -72,7 +72,7 @@ function LoginFormContent() {
           <span className="mb-2 mt-6">Password</span>
           <input
             type="password"
-            className="w-full rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+            className="input"
             placeholder={'Enter a password'}
             {...register('password')}
             disabled={loggingIn}
@@ -160,7 +160,7 @@ function RegisterFormContent() {
         <span className="mb-2"></span>
         <input
           type="text"
-          className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+          className="input"
           placeholder={'Enter an email'}
           {...register('email', { required: true })}
           disabled={signingUp}
@@ -171,7 +171,7 @@ function RegisterFormContent() {
         <span className="mb-2"></span>
         <input
           type="text"
-          className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+          className="input"
           placeholder={'Enter your name'}
           {...register('name', { required: true })}
           disabled={signingUp}
@@ -182,7 +182,7 @@ function RegisterFormContent() {
         <span className="mb-2"></span>
         <input
           type="password"
-          className="w-full rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+          className="input"
           placeholder={'Enter a password'}
           {...register('password', { required: true })}
           disabled={signingUp}
