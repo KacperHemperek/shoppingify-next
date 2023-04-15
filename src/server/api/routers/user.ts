@@ -90,8 +90,8 @@ export const userRouter = createTRPCRouter({
       } catch (e) {
         console.error(e);
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
+          code: 'UNAUTHORIZED',
+          message: 'Wrong password or email',
           cause: e,
         });
       }
