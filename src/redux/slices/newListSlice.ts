@@ -2,19 +2,19 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/redux/store';
 
-type newListItem = {
+type NewListItem = {
   id: number;
   amount: number;
   name: string;
 };
 
 // Define a type for the slice state
-type newListState = {
-  categories: { [key: string]: newListItem[] };
+type NewListState = {
+  categories: { [key: string]: NewListItem[] };
 };
 
 // Define the initial state using that type
-const initialState: newListState = {
+const initialState: NewListState = {
   categories: {},
 };
 
@@ -31,10 +31,7 @@ export const newListSlice = createSlice({
         categoryName: string;
       }>
     ) => {
-      if (
-        action.payload.categoryName in state.categories &&
-        Boolean(state.categories[action.payload.categoryName]?.length)
-      ) {
+      if (action.payload.categoryName in state.categories) {
         state.categories[action.payload.categoryName]?.push({
           amount: 1,
           id: action.payload.itemId,
@@ -50,12 +47,39 @@ export const newListSlice = createSlice({
         ];
       }
     },
+    removeItem: (
+      state,
+      action: PayloadAction<{
+        itemId: number;
+        categoryName: string;
+      }>
+    ) => {
+      if (action.payload.categoryName in state.categories) {
+        state.categories[action.payload.categoryName] = state.categories[
+          action.payload.categoryName
+        ]!.filter((item) => item.id !== action.payload.itemId);
+
+        if (state.categories[action.payload.categoryName]?.length === 0) {
+          delete state.categories[action.payload.categoryName];
+        }
+      }
+    },
   },
 });
 
-export const { addItem } = newListSlice.actions;
+export const { addItem, removeItem } = newListSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const getCategories = (state: RootState) => state.newList.categories;
+
+export const itemAlreadyOnLIst = (
+  state: RootState,
+  itemId: number,
+  categoryName: string
+) => {
+  return Boolean(
+    state.newList.categories[categoryName]?.find((item) => item.id === itemId)
+  );
+};
 
 export default newListSlice.reducer;
