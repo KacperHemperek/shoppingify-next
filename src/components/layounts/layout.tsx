@@ -1,7 +1,7 @@
 import { useUser } from '@/hooks/useUser';
 import NotLoggedIn from './NotLoggedIn';
 import Loadingpage from '@/components/layounts/LoadingPage';
-import SideBar from '@/components/SideBar';
+import SideBar from '@/components/sidebar/SideBarContainer';
 import NavBar from '@/components/NavBar';
 import { useRouter } from 'next/router';
 import type { PropsWithChildren } from 'react';
