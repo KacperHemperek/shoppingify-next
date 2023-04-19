@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import AddItemForm from './AddItemForm';
+import Cart from './Cart';
 import ItemInfo from './ItemInfo';
 
 const x = '100%';
@@ -35,9 +36,7 @@ function DesktopSideBar() {
           className="h-screen bg-neutral-extralight md:relative "
         >
           {sidebarOption === 'addItem' && <AddItemForm key="addItem" />}
-          {sidebarOption === 'cart' && (
-            <div className="flex h-full bg-primary-light" key={'cart'}></div>
-          )}
+          {sidebarOption === 'cart' && <Cart />}
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />
           )}
@@ -68,11 +67,7 @@ function MobileSideBar() {
           className="h-screen bg-neutral-extralight"
         >
           {sidebarOption === 'addItem' && <AddItemForm key="addItem" />}
-          {sidebarOption === 'cart' && (
-            <div className="flex h-full bg-primary-light" key={'cart'}>
-              Cart
-            </div>
-          )}
+          {sidebarOption === 'cart' && <Cart />}
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />
           )}

@@ -2,10 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/redux/store';
 
-type NewListItem = {
+export type NewListItem = {
   id: number;
   amount: number;
   name: string;
+  category: string;
 };
 
 // Define a type for the slice state
@@ -36,6 +37,7 @@ export const newListSlice = createSlice({
           amount: 1,
           id: action.payload.itemId,
           name: action.payload.itemName,
+          category: action.payload.categoryName,
         });
       } else {
         state.categories[action.payload.categoryName] = [
@@ -43,6 +45,7 @@ export const newListSlice = createSlice({
             amount: 1,
             id: action.payload.itemId,
             name: action.payload.itemName,
+            category: action.payload.categoryName,
           },
         ];
       }
@@ -64,13 +67,64 @@ export const newListSlice = createSlice({
         }
       }
     },
+    changeItemAmount: (
+      state,
+      action: PayloadAction<{
+        itemId: number;
+        categoryName: string;
+        type: 'increment' | 'decrement';
+        number?: number;
+      }>
+    ) => {
+      if (action.payload.categoryName in state.categories) {
+        const itemIndex = state.categories[
+          action.payload.categoryName
+        ]?.findIndex((item) => item.id === action.payload.itemId);
+
+        if (itemIndex === -1 || itemIndex === undefined) {
+          return;
+        }
+
+        const amountToChange =
+          action.payload.type === 'increment'
+            ? action.payload.number ?? 1
+            : action.payload.number
+            ? -action.payload.number
+            : -1;
+
+        state.categories[action.payload.categoryName]![itemIndex]!.amount +=
+          amountToChange;
+
+        if (
+          state.categories[action.payload.categoryName]![itemIndex]!.amount <= 0
+        ) {
+          state.categories[action.payload.categoryName] = state.categories[
+            action.payload.categoryName
+          ]?.filter((item) => item.id !== action.payload.itemId)!;
+
+          state.categories[action.payload.categoryName]?.length === 0 &&
+            delete state.categories[action.payload.categoryName];
+        }
+      }
+    },
   },
 });
 
-export const { addItem, removeItem } = newListSlice.actions;
+export const { addItem, removeItem, changeItemAmount } = newListSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const getCategories = (state: RootState) => state.newList.categories;
+export const getCategories = (state: RootState) =>
+  Object.entries(state.newList.categories).sort((a, b) => {
+    const nameA = a[0].toLowerCase();
+    const nameB = b[0].toLowerCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
 
 export const itemAlreadyOnLIst = (
   state: RootState,
