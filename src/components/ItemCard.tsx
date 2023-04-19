@@ -63,7 +63,6 @@ const ItemCard = React.forwardRef(
 
     const addItemToList = (e: React.MouseEvent) => {
       e.stopPropagation();
-      console.log('add item ' + item.name);
       dispatch(
         addItem({
           categoryName: item.category,

@@ -72,19 +72,30 @@ export default function Cart() {
       className="flex h-full flex-col justify-between bg-primary-light"
       key={'cart'}
     >
-      <div className="space-y-6 overflow-y-auto px-4 py-8 xl:p-12">
-        {[...categories, ...categories].map(([categoryName, items]) => (
-          <div className="flex w-full flex-col" key={categoryName}>
-            <h3 className="mb-2 text-xs font-medium text-[#828282] ">
-              {categoryName}
-            </h3>
-            <div className="flex flex-col ">
-              {items.map((item) => (
-                <CartItem {...item} key={item.id} />
-              ))}
+      <div className="overflow-y-auto px-4 py-8 xl:p-12">
+        <div className="mb-12 rounded-3xl bg-secondary p-6 text-neutral-extralight">
+          <h3 className="mb-4 font-bold">Didn’t find what you need?</h3>
+          <button className="rounded-xl bg-white px-6 py-2 font-bold text-neutral-dark">
+            Add Item
+          </button>
+        </div>
+        <h2 className="mb-6 text-2xl font-bold text-neutral-dark">
+          New shopping list
+        </h2>
+        <div className="space-y-6">
+          {categories.map(([categoryName, items]) => (
+            <div className="flex w-full flex-col" key={categoryName}>
+              <h3 className="mb-2 text-xs font-medium text-[#828282] ">
+                {categoryName}
+              </h3>
+              <div className="flex flex-col space-y-2 ">
+                {items.map((item) => (
+                  <CartItem {...item} key={item.id} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       <div className="mt-0 bg-white p-4 xl:px-12 xl:py-6">
         <form className="flex overflow-hidden rounded-xl border-2 border-primary">
