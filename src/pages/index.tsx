@@ -13,15 +13,18 @@ function filterCategories(
   if (!data) {
     return [];
   }
-
-  const reg = new RegExp(query, 'gi');
-
   return data
-    .filter((category) => category.items.some((item) => reg.test(item.name)))
+    .filter((category) =>
+      category.items.some((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      )
+    )
     .map(({ id, items, name }) => ({
       id,
       name,
-      items: items.filter((item) => item.name.match(reg)),
+      items: items.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      ),
     }));
 }
 
