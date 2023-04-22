@@ -6,63 +6,77 @@ import {
   type NewListItem,
 } from '@/redux/slices/newListSlice';
 import { MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { AnimatePresence, motion } from 'framer-motion';
+import { forwardRef } from 'react';
 
-function CartItem(item: NewListItem) {
-  const dispatch = useAppDispatch();
-
-  function handleIncrementAmount() {
-    dispatch(
-      changeItemAmount({
-        categoryName: item.category,
-        itemId: item.id,
-        type: 'increment',
-      })
-    );
-  }
-
-  function removeItemFromList() {
-    dispatch(removeItem({ categoryName: item.category, itemId: item.id }));
-  }
-
-  function handleDecrementAmount() {
-    dispatch(
-      changeItemAmount({
-        categoryName: item.category,
-        itemId: item.id,
-        type: 'decrement',
-      })
-    );
-  }
-
-  return (
-    <div className="flex h-full items-center justify-between">
-      <div className="truncate text-lg font-medium">{item.name}</div>{' '}
-      <div className="group flex items-center gap-2 rounded-lg py-1 pr-2 text-primary hover:bg-white hover:py-0 md:py-2 md:pr-2">
-        <button
-          onClick={removeItemFromList}
-          className="hidden rounded-lg bg-primary px-1 py-2 group-hover:block md:px-2 md:py-3 "
-        >
-          <TrashIcon className="h-6 w-6 text-white" />
-        </button>{' '}
-        <button
-          onClick={handleDecrementAmount}
-          className="hidden transition-all group-hover:block"
-        >
-          <MinusIcon className="h-6 w-6 " />
-        </button>{' '}
-        <div className="w-max rounded-full border-2 border-primary px-4 py-1 text-sm ">
-          <span className="font-semibold">{item.amount}</span> psc
-        </div>
-        <button
-          onClick={handleIncrementAmount}
-          className="hidden transition-all group-hover:block"
-        >
-          <PlusIcon className="h-6 w-6 " />
-        </button>{' '}
-      </div>
-    </div>
-  );
+interface CartItemProps extends NewListItem {
+  delay: number;
 }
+
+const CartItem = forwardRef(
+  ({ amount, category, id, name, delay }: CartItemProps, _ref) => {
+    const dispatch = useAppDispatch();
+
+    function handleIncrementAmount() {
+      dispatch(
+        changeItemAmount({
+          categoryName: category,
+          itemId: id,
+          type: 'increment',
+        })
+      );
+    }
+
+    function removeItemFromList() {
+      dispatch(removeItem({ categoryName: category, itemId: id }));
+    }
+
+    function handleDecrementAmount() {
+      dispatch(
+        changeItemAmount({
+          categoryName: category,
+          itemId: id,
+          type: 'decrement',
+        })
+      );
+    }
+
+    return (
+      <motion.div
+        initial={{ x: 10, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: -10, opacity: 0 }}
+        layout
+        className="flex h-full items-center justify-between"
+      >
+        <h4 className="truncate text-lg font-medium">{name}</h4>{' '}
+        <div className="group flex items-center gap-2 rounded-lg py-1 pr-2 text-primary hover:bg-white hover:py-0 md:py-2 md:pr-2">
+          <button
+            onClick={removeItemFromList}
+            className="hidden rounded-lg bg-primary px-1 py-2 group-hover:block md:px-2 md:py-3 "
+          >
+            <TrashIcon className="h-6 w-6 text-white" />
+          </button>{' '}
+          <button
+            onClick={handleDecrementAmount}
+            className="hidden transition-all group-hover:block"
+          >
+            <MinusIcon className="h-6 w-6 " />
+          </button>{' '}
+          <div className="w-max rounded-full border-2 border-primary px-4 py-1 text-sm ">
+            <span className="font-semibold">{amount}</span> psc
+          </div>
+          <button
+            onClick={handleIncrementAmount}
+            className="hidden transition-all group-hover:block"
+          >
+            <PlusIcon className="h-6 w-6 " />
+          </button>{' '}
+        </div>
+      </motion.div>
+    );
+  }
+);
 
 export default function Cart() {
   const categories = useAppSelector(getCategories);
@@ -83,18 +97,34 @@ export default function Cart() {
           New shopping list
         </h2>
         <div className="space-y-6">
-          {categories.map(([categoryName, items]) => (
-            <div className="flex w-full flex-col" key={categoryName}>
-              <h3 className="mb-2 text-xs font-medium text-[#828282] ">
-                {categoryName}
-              </h3>
-              <div className="flex flex-col space-y-2 ">
-                {items.map((item) => (
-                  <CartItem {...item} key={item.id} />
-                ))}
-              </div>
-            </div>
-          ))}
+          <AnimatePresence mode="popLayout">
+            {categories.map(([categoryName, items]) => (
+              <motion.div
+                exit={{ opacity: 0 }}
+                layout="preserve-aspect"
+                className="flex w-full flex-col"
+                key={categoryName}
+              >
+                <motion.h3
+                  layout={'position'}
+                  className="mb-2 text-xs font-medium text-[#828282] "
+                >
+                  {categoryName}
+                </motion.h3>
+                <div className="flex flex-col space-y-2 ">
+                  <AnimatePresence mode="popLayout">
+                    {items.map((item, idx) => (
+                      <CartItem
+                        {...item}
+                        delay={idx * 0.2 + 0.2}
+                        key={item.id}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
       <div className="mt-0 bg-white p-4 xl:px-12 xl:py-6">
