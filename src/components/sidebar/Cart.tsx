@@ -5,10 +5,12 @@ import {
   getCategories,
   removeItem,
   type NewListItem,
+  getAllItems,
 } from '@/redux/slices/newListSlice';
+import { api } from '@/utils/api';
 import { MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 
 const CartItem = forwardRef(
   ({ amount, category, id, name }: NewListItem, _ref) => {
@@ -78,7 +80,22 @@ CartItem.displayName = 'CartItem';
 
 export default function Cart() {
   const categories = useAppSelector(getCategories);
+  const items = useAppSelector(getAllItems);
   const { setSidebarOption } = useSidebar();
+
+  const [listname, setListname] = useState('');
+
+  const { mutateAsync } = api.list.create.useMutation();
+
+  async function saveList(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      await mutateAsync({
+        listName: listname,
+        items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
+      });
+    } catch (e) {}
+  }
 
   return (
     <motion.div
@@ -129,13 +146,27 @@ export default function Cart() {
         </div>
       </div>
       <div className="mt-0 bg-white p-4 xl:px-12 xl:py-6">
-        <form className="flex overflow-hidden rounded-xl border-2 border-primary">
+        <form
+          className={`${
+            listname.trim().length < 1
+              ? 'border-neutral-light'
+              : 'border-primary'
+          } flex overflow-hidden rounded-xl border-2 `}
+        >
           <input
             type="text"
             placeholder="Enter list name"
             className="grow px-4 font-medium outline-none"
+            value={listname}
+            onChange={(e) => {
+              setListname(e.target.value);
+            }}
           />
-          <button className="rounded-l-lg bg-primary p-4 font-semibold text-white">
+          <button
+            onClick={saveList}
+            disabled={listname.trim().length < 1}
+            className="rounded-l-lg bg-primary p-4 font-semibold text-white disabled:bg-neutral-light"
+          >
             Save
           </button>
         </form>

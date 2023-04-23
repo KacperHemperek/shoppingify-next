@@ -140,4 +140,9 @@ export const itemAlreadyOnLIst = (
   );
 };
 
+export const getAllItems = (state: RootState) =>
+  Object.entries(state.newList.categories)
+    .map(([_categoryName, items]) => items)
+    .reduce((prev, current) => [...prev, ...current], []);
+
 export default newListSlice.reducer;
