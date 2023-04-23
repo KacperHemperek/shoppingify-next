@@ -9,12 +9,8 @@ import { MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-interface CartItemProps extends NewListItem {
-  delay: number;
-}
-
 const CartItem = forwardRef(
-  ({ amount, category, id, name, delay }: CartItemProps, _ref) => {
+  ({ amount, category, id, name }: NewListItem, _ref) => {
     const dispatch = useAppDispatch();
 
     function handleIncrementAmount() {
@@ -78,6 +74,8 @@ const CartItem = forwardRef(
   }
 );
 
+CartItem.displayName = 'CartItem';
+
 export default function Cart() {
   const categories = useAppSelector(getCategories);
 
@@ -113,12 +111,8 @@ export default function Cart() {
                 </motion.h3>
                 <div className="flex flex-col space-y-2 ">
                   <AnimatePresence mode="popLayout">
-                    {items.map((item, idx) => (
-                      <CartItem
-                        {...item}
-                        delay={idx * 0.2 + 0.2}
-                        key={item.id}
-                      />
+                    {items.map((item) => (
+                      <CartItem {...item} key={item.id} />
                     ))}
                   </AnimatePresence>
                 </div>

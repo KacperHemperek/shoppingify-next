@@ -1,6 +1,6 @@
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { useState } from 'react';
 import useSidebar from '@/hooks/useSidebar';
 import { type Item } from '@/types/Item.interface';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';

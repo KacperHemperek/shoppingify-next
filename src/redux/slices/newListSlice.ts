@@ -21,7 +21,6 @@ const initialState: NewListState = {
 
 export const newListSlice = createSlice({
   name: 'newList',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
     addItem: (
@@ -32,8 +31,10 @@ export const newListSlice = createSlice({
         categoryName: string;
       }>
     ) => {
-      if (action.payload.categoryName in state.categories) {
-        state.categories[action.payload.categoryName]?.push({
+      const category = state.categories[action.payload.categoryName];
+
+      if (category) {
+        category.push({
           amount: 1,
           id: action.payload.itemId,
           name: action.payload.itemName,
@@ -57,10 +58,11 @@ export const newListSlice = createSlice({
         categoryName: string;
       }>
     ) => {
-      if (action.payload.categoryName in state.categories) {
-        state.categories[action.payload.categoryName] = state.categories[
-          action.payload.categoryName
-        ]!.filter((item) => item.id !== action.payload.itemId);
+      const category = state.categories[action.payload.categoryName];
+      if (category) {
+        state.categories[action.payload.categoryName] = category.filter(
+          (item) => item.id !== action.payload.itemId
+        );
 
         if (state.categories[action.payload.categoryName]?.length === 0) {
           delete state.categories[action.payload.categoryName];
@@ -76,10 +78,12 @@ export const newListSlice = createSlice({
         number?: number;
       }>
     ) => {
-      if (action.payload.categoryName in state.categories) {
-        const itemIndex = state.categories[
-          action.payload.categoryName
-        ]?.findIndex((item) => item.id === action.payload.itemId);
+      const category = state.categories[action.payload.categoryName];
+
+      if (category) {
+        const itemIndex = category.findIndex(
+          (item) => item.id === action.payload.itemId
+        );
 
         if (itemIndex === -1 || itemIndex === undefined) {
           return;
@@ -91,19 +95,19 @@ export const newListSlice = createSlice({
             : action.payload.number
             ? -action.payload.number
             : -1;
+        const item = category[itemIndex];
 
-        state.categories[action.payload.categoryName]![itemIndex]!.amount +=
-          amountToChange;
+        if (item) {
+          item.amount += amountToChange;
 
-        if (
-          state.categories[action.payload.categoryName]![itemIndex]!.amount <= 0
-        ) {
-          state.categories[action.payload.categoryName] = state.categories[
-            action.payload.categoryName
-          ]?.filter((item) => item.id !== action.payload.itemId)!;
+          if (item.amount <= 0) {
+            state.categories[action.payload.categoryName] = category.filter(
+              (item) => item.id !== action.payload.itemId
+            );
 
-          state.categories[action.payload.categoryName]?.length === 0 &&
-            delete state.categories[action.payload.categoryName];
+            state.categories[action.payload.categoryName]?.length === 0 &&
+              delete state.categories[action.payload.categoryName];
+          }
         }
       }
     },
