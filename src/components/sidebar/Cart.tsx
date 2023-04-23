@@ -1,3 +1,4 @@
+import useSidebar from '@/hooks/useSidebar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   changeItemAmount,
@@ -39,10 +40,9 @@ const CartItem = forwardRef(
 
     return (
       <motion.div
-        initial={{ x: 10, opacity: 0 }}
+        initial={{ opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -10, opacity: 0 }}
-        layout
         className="flex h-full items-center justify-between"
       >
         <h4 className="truncate text-lg font-medium">{name}</h4>{' '}
@@ -78,48 +78,55 @@ CartItem.displayName = 'CartItem';
 
 export default function Cart() {
   const categories = useAppSelector(getCategories);
+  const { setSidebarOption } = useSidebar();
 
   return (
-    <div
-      className="flex h-full flex-col justify-between bg-primary-light"
+    <motion.div
+      className="flex h-full flex-col justify-between  bg-primary-light"
       key={'cart'}
     >
-      <div className="overflow-y-auto px-4 py-8 xl:p-12">
+      <div className="overflow-y-scroll px-4 py-8 xl:p-12">
         <div className="mb-12 rounded-3xl bg-secondary p-6 text-neutral-extralight">
           <h3 className="mb-4 font-bold">Didn’t find what you need?</h3>
-          <button className="rounded-xl bg-white px-6 py-2 font-bold text-neutral-dark">
+
+          <button
+            onClick={() => setSidebarOption('addItem')}
+            className="rounded-xl bg-white px-6 py-2 font-bold text-neutral-dark"
+          >
             Add Item
           </button>
         </div>
         <h2 className="mb-6 text-2xl font-bold text-neutral-dark">
           New shopping list
         </h2>
-        <div className="space-y-6">
+        <motion.div className="space-y-6">
           <AnimatePresence mode="popLayout">
             {categories.map(([categoryName, items]) => (
               <motion.div
                 exit={{ opacity: 0 }}
-                layout="preserve-aspect"
+                layout="position"
                 className="flex w-full flex-col"
                 key={categoryName}
               >
                 <motion.h3
-                  layout={'position'}
+                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   className="mb-2 text-xs font-medium text-[#828282] "
                 >
                   {categoryName}
                 </motion.h3>
-                <div className="flex flex-col space-y-2 ">
+                <motion.div className="flex flex-col space-y-2 ">
                   <AnimatePresence mode="popLayout">
                     {items.map((item) => (
                       <CartItem {...item} key={item.id} />
                     ))}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </div>
       <div className="mt-0 bg-white p-4 xl:px-12 xl:py-6">
         <form className="flex overflow-hidden rounded-xl border-2 border-primary">
@@ -129,6 +136,6 @@ export default function Cart() {
           </button>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }
