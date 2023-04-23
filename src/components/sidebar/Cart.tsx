@@ -99,7 +99,7 @@ export default function Cart() {
         <h2 className="mb-6 text-2xl font-bold text-neutral-dark">
           New shopping list
         </h2>
-        <motion.div className="space-y-6">
+        <div className="space-y-6">
           <AnimatePresence mode="popLayout">
             {categories.map(([categoryName, items]) => (
               <motion.div
@@ -126,12 +126,16 @@ export default function Cart() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
       </div>
       <div className="mt-0 bg-white p-4 xl:px-12 xl:py-6">
         <form className="flex overflow-hidden rounded-xl border-2 border-primary">
-          <input type="text" className="grow p-2 outline-none" />
-          <button className="rounded-l-lg bg-primary px-4 py-3 font-semibold text-white">
+          <input
+            type="text"
+            placeholder="Enter list name"
+            className="grow px-4 font-medium outline-none"
+          />
+          <button className="rounded-l-lg bg-primary p-4 font-semibold text-white">
             Save
           </button>
         </form>

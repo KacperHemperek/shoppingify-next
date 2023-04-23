@@ -12,7 +12,7 @@
 
 @layer components {
   .input {
-    @apply rounded-xl border-2 border-neutral-light p-4 text-base font-medium text-neutral-dark outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light disabled:bg-slate-100 disabled:text-slate-500 disabled:outline-none;
+    @apply rounded-xl border-2 border-neutral-light p-4 font-medium text-neutral-dark outline-2 outline-primary transition-all placeholder:text-neutral-light disabled:bg-slate-100 disabled:text-slate-500 disabled:outline-none;
   }
 
   .label {
@@ -20,7 +20,7 @@
   }
 
   .submit-button {
-    @apply flex w-full items-center justify-center self-center  rounded-xl bg-primary p-4 font-semibold text-white transition-all hover:scale-[101%] hover:shadow-md hover:shadow-primary/30 disabled:cursor-not-allowed disabled:bg-primary/60 disabled:hover:scale-100 disabled:hover:shadow-none;
+    @apply flex w-full items-center justify-center self-center rounded-xl bg-primary p-4 font-semibold text-white transition-all hover:scale-[101%] hover:shadow-md hover:shadow-primary/30 disabled:cursor-not-allowed disabled:bg-primary/60 disabled:hover:scale-100 disabled:hover:shadow-none;
   }
 }
 
