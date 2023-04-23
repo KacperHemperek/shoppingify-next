@@ -24,7 +24,8 @@ model User {
 }
 
 model Session {
-  id     Int  @id @unique @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
+
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
@@ -32,35 +33,44 @@ model Session {
 }
 
 model Category {
-  id     Int    @id @unique @default(autoincrement())
-  user   User   @relation(fields: [userId], references: [id])
+  id    Int    @id @unique @default(autoincrement())
+  name  String
+  items Item[]
+
+  user   User @relation(fields: [userId], references: [id])
   userId Int
-  name   String
-  items  Item[]
 }
 
 model Item {
-  id         Int        @id @unique @default(autoincrement())
-  category   Category   @relation(fields: [categoryId], references: [id])
-  listItems  ListItem[]
+  id        Int        @id @unique @default(autoincrement())
+  listItems ListItem[]
+  name      String
+  desc      String
+
+  category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
-  name       String
-  desc       String
+}
+
+enum ListState {
+  completed
+  cancelled
+  current
 }
 
 model List {
-  id     Int        @id @unique @default(autoincrement())
-  name   String
-  items  ListItem[]
-  user   User       @relation(fields: [userId], references: [id])
+  id    Int        @id @unique @default(autoincrement())
+  name  String
+  items ListItem[]
+  state ListState  @default(current)
+
+  user   User @relation(fields: [userId], references: [id])
   userId Int
 }
 
 model ListItem {
-  id           Int     @id @unique @default(autoincrement())
-  amount       Int
-  checked      Boolean
-  categoryName String
+  id      Int     @id @unique @default(autoincrement())
+  amount  Int
+  checked Boolean
 
   list   List @relation(fields: [listId], references: [id])
   listId Int
