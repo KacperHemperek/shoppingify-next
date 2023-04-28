@@ -21,7 +21,7 @@ function History() {
         new Date(listA.createdAt),
         new Date(listB.createdAt),
       ];
-      return dateA.getTime() - dateB.getTime();
+      return dateB.getTime() - dateA.getTime();
     });
 
     const result: {
@@ -56,8 +56,8 @@ function History() {
   return (
     <div className="flex w-full flex-col px-3 py-8 md:px-6 xl:px-20">
       <div className="flex flex-col">
-        {Object.entries(listsGroupedByDate)?.map(([date, lists]) => (
-          <div className="flex flex-col">
+        {Object.entries(listsGroupedByDate).map(([date, lists]) => (
+          <div className="flex flex-col" key={date}>
             {date}
             {lists.map((list) => (
               <SingleListItem {...list} key={list.id + list.name} />
