@@ -69,6 +69,11 @@ export const newListSlice = createSlice({
         }
       }
     },
+    clearList: (state, _action: PayloadAction<void>) => {
+      Object.keys(state.categories).forEach((key) => {
+        delete state.categories[key];
+      });
+    },
     changeItemAmount: (
       state,
       action: PayloadAction<{
@@ -114,7 +119,8 @@ export const newListSlice = createSlice({
   },
 });
 
-export const { addItem, removeItem, changeItemAmount } = newListSlice.actions;
+export const { addItem, removeItem, changeItemAmount, clearList } =
+  newListSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const getCategories = (state: RootState) =>

@@ -9,6 +9,7 @@ import Layout from '@/components/layounts/layout';
 import { Provider as ReduxProvider } from 'react-redux';
 import { persistor, store } from '@/redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Toaster } from 'react-hot-toast';
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -17,6 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <UserContextProvider>
           <SidebarContextProvider>
             <Layout>
+              <Toaster />
               <Component {...pageProps} />
             </Layout>
           </SidebarContextProvider>

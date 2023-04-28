@@ -9,10 +9,22 @@ const itemSchema = z.object({
 
 export const listRouter = createTRPCRouter({
   create: userProcedure
-    .input(z.object({ listName: z.string(), items: z.array(itemSchema) }))
+    .input(
+      z.object({
+        listName: z.string(),
+        items: z.array(itemSchema).min(1, 'List has to have at least one item'),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
+      if (input.items.length < 1) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You need to provide at least one item',
+        });
       }
 
       try {
