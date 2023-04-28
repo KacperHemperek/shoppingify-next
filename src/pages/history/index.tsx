@@ -1,10 +1,58 @@
 import { type RouterOutputs, api } from '@/utils/api';
+import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ListState } from '@prisma/client';
 import { useMemo } from 'react';
+
+function Tag({ variant }: { variant: ListState }) {
+  const wrapperClassName: { [key in typeof variant]: string } = {
+    cancelled: 'text-danger border-danger',
+    completed: 'text-success border-success',
+    current: 'text-primary border-primary',
+  };
+
+  const universalClassName = 'p-1 text-xs rounded-lg border';
+
+  return (
+    <div className={wrapperClassName[variant] + ' ' + universalClassName}>
+      {variant}
+    </div>
+  );
+}
 
 type SingleItemProps = RouterOutputs['list']['getAll'][number];
 
 function SingleListItem(list: SingleItemProps) {
-  return <div>{list.name}</div>;
+  const dateToDisplay = useMemo(() => {
+    return Intl.DateTimeFormat('en-US', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    })
+      .format(list.createdAt)
+      .replace(/\//g, '.');
+  }, []);
+
+  return (
+    <div className="bg-white rounded-xl flex items-center p-5 shadow-md cursor-pointer ">
+      <div className="flex flex-col md:flex-row items-start justify-start md:justify-between md:items-center w-full">
+        <p className="truncate font-medium mb-2 md:mb-0">{list.name}</p>
+        <div className="grid grid-cols-6 gap-4 max-w-[240px] xl:max-w-sm md:w-full md:grid-cols-12">
+          <div className="flex items-center col-span-4 md:col-span-8 md:justify-end text-neutral-light min-w-fit gap-2">
+            <CalendarIcon className="w-5 h-5" />
+            <p className="text-sm ">{dateToDisplay}</p>
+          </div>
+          <div className="flex justify-center items-center col-span-1 md:col-span-3 ">
+            <Tag variant={list.state} />
+          </div>
+          <div className="w-min col-span-1 justify-end items-center hidden md:flex">
+            <ChevronRightIcon className="text-primary w-5 h-5" />
+          </div>
+        </div>
+      </div>
+      <ChevronRightIcon className="text-primary w-5 h-5 block md:hidden" />
+    </div>
+  );
 }
 
 function History() {
@@ -56,13 +104,18 @@ function History() {
   return (
     <div className="flex w-full flex-col px-3 py-8 md:px-6 xl:px-20">
       <div className="flex flex-col">
+        <h1 className="text-2xl font-bold text-neutral-dark">
+          Shopping History
+        </h1>
         {Object.entries(listsGroupedByDate).map(([date, lists]) => (
-          <div className="flex flex-col" key={date}>
-            {date}
-            {lists.map((list) => (
-              <SingleListItem {...list} key={list.id + list.name} />
-            ))}
-          </div>
+          <article className="flex flex-col mt-12" key={date}>
+            <h5 className="text-xs font-medium mb-4">{date}</h5>
+            <div className="space-y-6 w-full">
+              {lists.map((list) => (
+                <SingleListItem {...list} key={list.id + list.name} />
+              ))}
+            </div>
+          </article>
         ))}
       </div>
     </div>
