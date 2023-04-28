@@ -1,4 +1,4 @@
-import { createTRPCRouter, userProcedure } from '@/server/api/trpc';
+import { createTRPCRouter, userProtectedProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -8,7 +8,7 @@ const itemSchema = z.object({
 });
 
 export const listRouter = createTRPCRouter({
-  create: userProcedure
+  create: userProtectedProcedure
     .input(
       z.object({
         listName: z.string(),
@@ -16,10 +16,6 @@ export const listRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.user) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
-      }
-
       if (input.items.length < 1) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
@@ -54,4 +50,20 @@ export const listRouter = createTRPCRouter({
         });
       }
     }),
+  getAll: userProtectedProcedure.query(async ({ ctx }) => {
+    try {
+      const lists = await ctx.prisma.list.findMany({
+        where: { userId: ctx.user.id },
+        select: { name: true, id: true, state: true, createdAt: true },
+      });
+
+      return lists;
+    } catch (e) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Something went wrong',
+        cause: e,
+      });
+    }
+  }),
 });

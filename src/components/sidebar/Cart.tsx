@@ -91,21 +91,26 @@ export default function Cart() {
 
   const [listname, setListname] = useState('');
 
-  const { mutateAsync } = api.list.create.useMutation({
+  const apiUtils = api.useContext();
+
+  const { mutate: createList } = api.list.create.useMutation({
     onError: (e) => {
       toast.error(formatErrorMessage(e) ?? 'Sorry something went wrong!');
       setListname('');
+    },
+    onSuccess: () => {
+      toast.success('List created successfully');
+      apiUtils.list.getAll.invalidate();
     },
   });
 
   async function saveList(e: React.FormEvent) {
     e.preventDefault();
-    try {
-      await mutateAsync({
-        listName: listname,
-        items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
-      });
-    } catch (e) {}
+
+    createList({
+      listName: listname,
+      items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
+    });
   }
 
   function onClearList() {
@@ -117,13 +122,14 @@ export default function Cart() {
       className="flex h-full flex-col justify-between  bg-primary-light"
       key={'cart'}
     >
-      <div className="overflow-y-scroll px-4 py-8 xl:p-12">
+      <div className="overflow-y-scroll px-4 flex flex-col py-8 xl:p-12">
+        <button className=""></button>
         <div className="mb-12 rounded-3xl bg-secondary p-6 text-neutral-extralight">
           <h3 className="mb-4 font-bold">Didn’t find what you need?</h3>
 
           <button
             onClick={() => setSidebarOption('addItem')}
-            className="rounded-xl bg-white px-6 py-2 font-bold text-neutral-dark"
+            className="bg-white rounded-xl  px-6 py-2 font-bold text-neutral-dark"
           >
             Add Item
           </button>

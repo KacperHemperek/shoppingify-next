@@ -14,10 +14,22 @@
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
+import { prisma } from '@/server/db';
+import { type User } from '@prisma/client';
+
+/**
+ * 2. INITIALIZATION
+ *
+ * This is where the tRPC API is initialized, connecting the context and transformer. We also parse
+ * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
+ * errors on the backend.
+ */
+import { TRPCError, initTRPC } from '@trpc/server';
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
 import { serialize, type CookieSerializeOptions } from 'cookie';
-
-import { prisma } from '@/server/db';
+import { type NextApiResponse } from 'next';
+import superjson from 'superjson';
+import { ZodError } from 'zod';
 
 type CreateContextOptions = Record<string, never>;
 
@@ -87,19 +99,6 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
     }
   );
 };
-
-/**
- * 2. INITIALIZATION
- *
- * This is where the tRPC API is initialized, connecting the context and transformer. We also parse
- * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
- * errors on the backend.
- */
-import { initTRPC } from '@trpc/server';
-import superjson from 'superjson';
-import { ZodError } from 'zod';
-import { type NextApiResponse } from 'next';
-import { type User } from '@prisma/client';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -186,3 +185,15 @@ const getUserInContextMiddleware = t.middleware(async ({ ctx, next }) => {
 });
 
 export const userProcedure = publicProcedure.use(getUserInContextMiddleware);
+
+const authorizeUser = getUserInContextMiddleware.unstable_pipe(
+  ({ ctx, next }) => {
+    if (!ctx.user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+
+    return next({ ctx: { ...ctx, user: ctx.user as User } });
+  }
+);
+
+export const userProtectedProcedure = userProcedure.use(authorizeUser);
