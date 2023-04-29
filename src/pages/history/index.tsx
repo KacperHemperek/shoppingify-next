@@ -1,6 +1,6 @@
 import useSidebar from '@/hooks/useSidebar';
 import { type RouterOutputs, api } from '@/utils/api';
-import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { ListState } from '@prisma/client';
 import { memo, useMemo } from 'react';
 

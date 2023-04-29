@@ -1,15 +1,18 @@
+import Checkbox from '../Checkbox';
 import { BackButton } from './BackButton';
 import useSidebar from '@/hooks/useSidebar';
 import { api } from '@/utils/api';
+import { useState } from 'react';
 
 export default function List({ listId }: { listId: number }) {
   const {
     data: listData,
     isLoading: fetchingList,
     error: fetchingListError,
-  } = api.list.getList.useQuery({ listId });
+  } = api.list.getListById.useQuery({ listId });
 
   const { setSidebarOption } = useSidebar();
+  const [checked, setChecked] = useState(false);
 
   if (fetchingListError) {
     return (
@@ -55,6 +58,10 @@ export default function List({ listId }: { listId: number }) {
         <h2 className="text-2xl font-bold text-neutral-dark">
           {listData.name}
         </h2>
+        <Checkbox checked={checked} setChecked={setChecked} />
+
+        {/* {listData.items.map((item) => (
+        ))} */}
       </div>
     </div>
   );
