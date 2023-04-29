@@ -1,3 +1,4 @@
+import { ItemAmount } from './ItemAmount';
 import useSidebar from '@/hooks/useSidebar';
 import { formatErrorMessage } from '@/lib/trpcErrorFormater';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -71,9 +72,7 @@ const CartItem = forwardRef(
           >
             <MinusIcon className="h-6 w-6 " />
           </button>{' '}
-          <div className="w-max rounded-full border-2 border-primary px-4 py-1 text-sm ">
-            <span className="font-semibold">{amount}</span> psc
-          </div>
+          <ItemAmount amount={amount} />
           <button
             onClick={handleIncrementAmount}
             className="hidden transition-all group-hover:block"
