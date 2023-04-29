@@ -1,9 +1,10 @@
+import useSidebar from '@/hooks/useSidebar';
 import { type RouterOutputs, api } from '@/utils/api';
 import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { ListState } from '@prisma/client';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
-function Tag({ variant }: { variant: ListState }) {
+function TagComponent({ variant }: { variant: ListState }) {
   const wrapperClassName: { [key in typeof variant]: string } = {
     cancelled: 'text-danger border-danger',
     completed: 'text-success border-success',
@@ -19,22 +20,32 @@ function Tag({ variant }: { variant: ListState }) {
   );
 }
 
+const Tag = memo(TagComponent);
+
 type SingleItemProps = RouterOutputs['list']['getAll'][number];
 
-function SingleListItem(list: SingleItemProps) {
-  const dateToDisplay = useMemo(() => {
-    return Intl.DateTimeFormat('en-US', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    })
-      .format(list.createdAt)
-      .replace(/\//g, '.');
-  }, []);
+function SingleListItemComponent(list: SingleItemProps) {
+  const { setSidebarOption, setCurrentListId } = useSidebar();
+
+  const dateToDisplay = Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+  })
+    .format(list.createdAt)
+    .replace(/\//g, '.');
+
+  const goToListSidebarView = () => {
+    setSidebarOption('list');
+    setCurrentListId(list.id);
+  };
 
   return (
-    <div className="bg-white rounded-xl flex items-center p-5 shadow-md cursor-pointer ">
+    <div
+      onClick={goToListSidebarView}
+      className="bg-white rounded-xl flex items-center p-5 shadow-md cursor-pointer "
+    >
       <div className="flex flex-col md:flex-row items-start justify-start md:justify-between md:items-center w-full">
         <p className="truncate font-medium mb-2 md:mb-0">{list.name}</p>
         <div className="grid grid-cols-6 gap-4 max-w-[240px] xl:max-w-sm md:w-full md:grid-cols-12">
@@ -54,6 +65,8 @@ function SingleListItem(list: SingleItemProps) {
     </div>
   );
 }
+
+const SingleListItem = memo(SingleListItemComponent);
 
 function History() {
   const {

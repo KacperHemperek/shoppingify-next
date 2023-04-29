@@ -1,10 +1,11 @@
+import AddItemForm from './AddItemForm';
+import Cart from './Cart';
+import ItemInfo from './ItemInfo';
+import List from './List';
 import useSidebar from '@/hooks/useSidebar';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
-import AddItemForm from './AddItemForm';
-import Cart from './Cart';
-import ItemInfo from './ItemInfo';
 
 const x = '100%';
 
@@ -21,7 +22,7 @@ const variants = {
 };
 
 function DesktopSideBar() {
-  const { sidebarOption, item } = useSidebar();
+  const { sidebarOption, item, currentListId } = useSidebar();
 
   return (
     <div className="hidden w-[calc(100%-72px)] md:block md:w-full md:max-w-[300px] xl:max-w-sm">
@@ -40,6 +41,9 @@ function DesktopSideBar() {
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />
           )}
+          {sidebarOption === 'list' && currentListId && (
+            <List listId={currentListId} key={'list'} />
+          )}
         </motion.div>
       </AnimatePresence>
     </div>
@@ -47,7 +51,7 @@ function DesktopSideBar() {
 }
 
 function MobileSideBar() {
-  const { sidebarOption, item } = useSidebar();
+  const { sidebarOption, item, currentListId } = useSidebar();
 
   return (
     <motion.div
@@ -70,6 +74,9 @@ function MobileSideBar() {
           {sidebarOption === 'cart' && <Cart />}
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />
+          )}
+          {sidebarOption === 'list' && currentListId && (
+            <List listId={currentListId} key={'list'} />
           )}
         </motion.div>
       </AnimatePresence>

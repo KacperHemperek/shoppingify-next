@@ -10,7 +10,12 @@ import {
   clearList,
 } from '@/redux/slices/newListSlice';
 import { api } from '@/utils/api';
-import { MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  MinusIcon,
+  PlusIcon,
+  TrashIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
@@ -122,8 +127,14 @@ export default function Cart() {
       className="flex h-full flex-col justify-between  bg-primary-light"
       key={'cart'}
     >
-      <div className="overflow-y-scroll px-4 flex flex-col py-8 xl:p-12">
-        <button className=""></button>
+      <div className="overflow-y-scroll px-4 flex flex-col py-8 xl:px-12">
+        <button
+          type="button"
+          onClick={() => setSidebarOption(undefined)}
+          className="md:hidden self-end mb-4"
+        >
+          <XMarkIcon className="h-6 w-6 text-black" />
+        </button>
         <div className="mb-12 rounded-3xl bg-secondary p-6 text-neutral-extralight">
           <h3 className="mb-4 font-bold">Didn’t find what you need?</h3>
 
