@@ -85,7 +85,7 @@ export const listRouter = createTRPCRouter({
           data: { state: 'cancelled' },
         });
 
-        const newList = await ctx.prisma.list.create({
+        await ctx.prisma.list.create({
           data: {
             name: input.listName,
             userId: ctx.user.id,

@@ -50,26 +50,23 @@ export const itemRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         if (!input.categoryId) {
-          const newCategory = await ctx.prisma.category.create({
+          await ctx.prisma.category.create({
             data: {
               name: input.categoryName,
               userId: ctx.user.id,
               items: { create: { desc: input.desc, name: input.name } },
             },
           });
-
           return;
         }
 
-        const newItem = await ctx.prisma.item.create({
+        await ctx.prisma.item.create({
           data: {
             desc: input.desc,
             name: input.name,
             categoryId: input.categoryId,
           },
         });
-
-        return;
       } catch (e) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
