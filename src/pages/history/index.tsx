@@ -1,5 +1,6 @@
 import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { type ListState } from '@prisma/client';
+import { useRouter } from 'next/router';
 import { memo, useMemo } from 'react';
 
 import useSidebar from '@/hooks/useSidebar';
@@ -71,6 +72,10 @@ function SingleListItemComponent(list: SingleItemProps) {
 const SingleListItem = memo(SingleListItemComponent);
 
 function History() {
+  const router = useRouter();
+
+  const { setSidebarOption } = useSidebar();
+
   const {
     data: lists,
     isLoading: fetchingLists,
@@ -78,7 +83,11 @@ function History() {
   } = api.list.getAll.useQuery();
 
   const listsGroupedByDate = useMemo(() => {
-    if (!lists) return [];
+    const result: {
+      [date in string]: SingleItemProps[];
+    } = {};
+
+    if (!lists) return Object.entries(result);
     lists?.sort((listA, listB) => {
       const [dateA, dateB] = [
         new Date(listA.createdAt),
@@ -86,10 +95,6 @@ function History() {
       ];
       return dateB.getTime() - dateA.getTime();
     });
-
-    const result: {
-      [date in string]: SingleItemProps[];
-    } = {};
 
     for (const list of lists) {
       const formatedDate = Intl.DateTimeFormat('en-US', {
@@ -105,13 +110,14 @@ function History() {
       }
     }
 
-    return result;
+    return Object.entries(result);
   }, [lists]);
+
   if (errorFetchingLists) {
     return <div>Error occured when fetching lists</div>;
   }
 
-  if (fetchingLists || !listsGroupedByDate) {
+  if (fetchingLists) {
     return <div>Loading lists</div>;
   }
 
@@ -121,16 +127,33 @@ function History() {
         <h1 className="text-2xl font-bold text-neutral-dark">
           Shopping History
         </h1>
-        {Object.entries(listsGroupedByDate).map(([date, lists]) => (
-          <article className="mt-12 flex flex-col" key={date}>
-            <h5 className="mb-4 text-xs font-medium">{date}</h5>
-            <div className="w-full space-y-6">
-              {lists.map((list) => (
-                <SingleListItem {...list} key={list.id + list.name} />
-              ))}
-            </div>
-          </article>
-        ))}
+        {!listsGroupedByDate.length && (
+          <div>
+            <h2 className="my-6 text-lg font-medium text-neutral-light">
+              You don’t have any lists,{' '}
+              <a
+                className="cursor-pointer font-bold text-primary underline"
+                onClick={() => {
+                  router.push('/');
+                  setSidebarOption('cart');
+                }}
+              >
+                create list
+              </a>
+            </h2>
+          </div>
+        )}
+        {!!listsGroupedByDate &&
+          listsGroupedByDate.map(([date, lists]) => (
+            <article className="mt-12 flex flex-col" key={date}>
+              <h5 className="mb-4 text-xs font-medium">{date}</h5>
+              <div className="w-full space-y-6">
+                {lists.map((list) => (
+                  <SingleListItem {...list} key={list.id + list.name} />
+                ))}
+              </div>
+            </article>
+          ))}
       </div>
     </div>
   );

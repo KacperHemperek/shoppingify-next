@@ -118,7 +118,7 @@ function List({
   items: FormatedItem[];
   listState: ListState;
 }) {
-  const itemsGroupedByCategory = useMemo(() => {
+  const itemsGroupedByCategory = useMemo<[string, FormatedItem[]][]>(() => {
     const groupedItems: { [key in string]: FormatedItem[] } = {};
 
     items.forEach((item) => {
@@ -128,28 +128,29 @@ function List({
         groupedItems[item.category] = [item];
       }
     });
-
-    return groupedItems;
+    const result = Object.entries(groupedItems);
+    return result;
   }, [items]);
 
   return (
     <article className="space-y-6">
-      {Object.entries(itemsGroupedByCategory).map(([category, items]) => (
-        <div className="flex flex-col" key={category}>
-          <h5 className="mb-4 text-xs font-medium text-[#828282]">
-            {category}
-          </h5>
-          <div className="space-y-4">
-            {items.map((item) => (
-              <ListItem
-                key={item.name + item.id}
-                item={item}
-                disabled={listState !== 'current'}
-              />
-            ))}
+      {!!itemsGroupedByCategory.length &&
+        itemsGroupedByCategory.map(([category, items]) => (
+          <div className="flex flex-col" key={category}>
+            <h5 className="mb-4 text-xs font-medium text-[#828282]">
+              {category}
+            </h5>
+            <div className="space-y-4">
+              {items.map((item) => (
+                <ListItem
+                  key={item.name + item.id}
+                  item={item}
+                  disabled={listState !== 'current'}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </article>
   );
 }
