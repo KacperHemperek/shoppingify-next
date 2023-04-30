@@ -101,14 +101,17 @@ function NavBar() {
 
   return (
     <nav className="flex flex-col justify-between bg-white">
-      <div className="relative flex items-center justify-center p-3 md:p-6">
+      <Link
+        href="/"
+        className="relative flex items-center justify-center m-3 md:m-6"
+      >
         <Image
           src={'/assets/logo.svg'}
           alt="Website Logo"
           width={40}
           height={40}
         />
-      </div>
+      </Link>
       <div className="flex flex-col space-y-6 xl:space-y-10">
         <NavLinkOption to={'/'}>
           <ListBulletIcon className="h-6 w-6 text-neutral-dark" />
