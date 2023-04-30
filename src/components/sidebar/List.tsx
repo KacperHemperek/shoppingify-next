@@ -129,8 +129,6 @@ function List({
       }
     });
     const result = Object.entries(groupedItems);
-
-    debugger;
     return result;
   }, [items]);
 
