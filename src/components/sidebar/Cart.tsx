@@ -4,7 +4,8 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { AnimatePresence, motion } from 'framer-motion';
+import classNames from 'classnames';
+import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -99,6 +100,7 @@ function useCreateNewList({
   onSuccessCallback: () => void;
 }) {
   const items = useAppSelector(getAllItems);
+  const dispatch = useAppDispatch();
   const apiUtils = api.useContext();
 
   const { mutate } = api.list.create.useMutation({
@@ -108,8 +110,10 @@ function useCreateNewList({
     onSuccess: () => {
       toast.success('List created successfully');
       apiUtils.list.getAll.invalidate();
+      apiUtils.list.getCurrentListId.invalidate();
 
       onSuccessCallback();
+      dispatch(clearList());
     },
   });
 
@@ -184,6 +188,7 @@ export default function Cart() {
   const dispatch = useAppDispatch();
   const { setSidebarOption } = useSidebar();
   const { openModal } = useModal();
+
   const { createList, items } = useCreateNewList({
     onSuccessCallback: () => setListname(''),
   });
@@ -196,6 +201,8 @@ export default function Cart() {
     { listId: currentListId ?? -1 },
     { enabled: !!currentListId }
   );
+
+  const saveListDisabled = !listname.trim().length || !items.length;
 
   async function saveList(e: React.FormEvent) {
     e.preventDefault();
@@ -294,13 +301,12 @@ export default function Cart() {
           )}
         </div>
         <div className="mt-0 bg-white p-4 xl:px-12 xl:py-6">
-          <form
+          <motion.form
             onSubmit={saveList}
-            className={`${
-              listname.trim().length < 1
-                ? 'border-neutral-light'
-                : 'border-primary'
-            } flex overflow-hidden rounded-xl border-2 `}
+            className={classNames(
+              saveListDisabled ? 'border-neutral-light' : 'border-primary',
+              'flex overflow-hidden rounded-xl border-2 '
+            )}
           >
             <input
               type="text"
@@ -312,12 +318,12 @@ export default function Cart() {
               }}
             />
             <button
-              disabled={listname.trim().length < 1}
+              disabled={saveListDisabled}
               className="rounded-l-lg bg-primary p-4 font-semibold text-white disabled:bg-neutral-light"
             >
               Save
             </button>
-          </form>
+          </motion.form>
         </div>
       </motion.div>
     </>

@@ -1,7 +1,10 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 
 import useSidebar from '@/hooks/useSidebar';
+
+import { formatErrorMessage } from '@/lib/trpcErrorFormater';
 
 import { api } from '@/utils/api';
 
@@ -29,7 +32,12 @@ function AddItemForm() {
   const { mutate: createItemMutation, isLoading: creatingItem } =
     api.item.add.useMutation({
       onSuccess: () => {
+        reset();
+        setSidebarOption('cart');
         utils.item.getAll.invalidate();
+      },
+      onError: (e) => {
+        toast.error(formatErrorMessage(e) ?? '');
       },
     });
 
@@ -43,9 +51,6 @@ function AddItemForm() {
       name: data.name.trim(),
       categoryId,
     });
-
-    reset();
-    setSidebarOption('cart');
   };
 
   return (
