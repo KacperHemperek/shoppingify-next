@@ -1,10 +1,81 @@
 import Checkbox from '../Checkbox';
 import { BackButton } from './BackButton';
+import { ItemAmount } from './ItemAmount';
 import useSidebar from '@/hooks/useSidebar';
+import { FormatedItem } from '@/server/api/routers/list';
 import { api } from '@/utils/api';
-import { useState } from 'react';
+import { ListState } from '@prisma/client';
+import classnames from 'classnames';
+import { useMemo, useState } from 'react';
 
-export default function List({ listId }: { listId: number }) {
+function ListItem({
+  item,
+  disabled,
+}: {
+  item: FormatedItem;
+  disabled: boolean;
+}) {
+  return (
+    <label
+      className={classnames(
+        disabled && 'cursor-not-allowed',
+        'flex justify-between items-center'
+      )}
+    >
+      <div
+        className={classnames(
+          disabled && 'text-neutral-light',
+          'flex gap-2 font-medium'
+        )}
+      >
+        <Checkbox checked={item.checked} disabled={disabled} />
+        {item.name}
+      </div>
+      <ItemAmount amount={item.amount} />
+    </label>
+  );
+}
+
+function List({
+  items,
+  listState,
+}: {
+  items: FormatedItem[];
+  listState: ListState;
+}) {
+  const itemsGroupedByCategory = useMemo(() => {
+    const groupedItems: { [key in string]: FormatedItem[] } = {};
+
+    items.forEach((item) => {
+      if (item.category in groupedItems) {
+        groupedItems[item.category]?.push(item);
+      } else {
+        groupedItems[item.category] = [item];
+      }
+    });
+
+    return groupedItems;
+  }, [items]);
+
+  return (
+    <article className="space-y-6">
+      {Object.entries(itemsGroupedByCategory).map(([category, items]) => (
+        <div className="flex flex-col">
+          <h5 className="mb-4 text-xs font-medium text-[#828282]">
+            {category}
+          </h5>
+          <div className="space-y-4">
+            {items.map((item) => (
+              <ListItem item={item} disabled={listState !== 'current'} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </article>
+  );
+}
+
+export default function ListView({ listId }: { listId: number }) {
   const {
     data: listData,
     isLoading: fetchingList,
@@ -55,13 +126,11 @@ export default function List({ listId }: { listId: number }) {
             }}
           />
         </div>
-        <h2 className="text-2xl font-bold text-neutral-dark">
+        <h2 className="text-2xl font-bold text-neutral-dark mb-6">
           {listData.name}
         </h2>
-        <Checkbox checked={checked} setChecked={setChecked} />
 
-        {/* {listData.items.map((item) => (
-        ))} */}
+        <List items={listData.items} listState={listData.state} />
       </div>
     </div>
   );

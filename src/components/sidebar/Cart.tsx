@@ -177,7 +177,7 @@ export default function Cart() {
                     exit={{ opacity: 0 }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mb-2 text-xs font-medium text-[#828282] "
+                    className="mb-2 text-xs font-medium text-[#828282]"
                   >
                     {categoryName}
                   </motion.h3>

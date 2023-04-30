@@ -1,41 +1,55 @@
+import classnames from 'classnames';
 import { motion } from 'framer-motion';
 import React from 'react';
 
 export default function Checkbox({
   checked,
+  newValue,
+  wrapperClassName,
   setChecked,
+  disabled = false,
 }: {
   checked: boolean;
-  setChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  wrapperClassName?: string;
+  newValue?: boolean;
+  setChecked?: (value: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
-    <div onClick={() => setChecked((prev) => !prev)} className="relative">
+    <label className={classnames('relative w-min', wrapperClassName)}>
       <input
         type="checkbox"
-        checked={checked}
-        className="w-0 h-0 absolute pointer-events-none group"
-        onChange={() => setChecked((prev) => !prev)}
+        defaultChecked={checked}
+        className="hide-visually"
+        onChange={(e) => {
+          e.stopPropagation();
+          !disabled && setChecked && setChecked(!!newValue);
+        }}
+        disabled={disabled}
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 36 36"
-        className={`${
-          checked ? 'bg-primary' : 'bg-transparent'
-        } w-6 h-6 rounded-md border-2 border-primary duration-100 group-focus:outline-4 group-focus:outline-primary/25`}
+        viewBox="0 0 40 40"
+        className={classnames(
+          disabled
+            ? 'stroke-neutral-light border-neutral-light cursor-not-allowed'
+            : 'stroke-primary border-primary cursor-pointer',
+          'w-6 h-6 rounded-md border-2  duration-100 group-focus:outline-4 stroke-[4px]'
+        )}
       >
         <motion.path
           animate={{
             pathLength: checked ? 1 : 0,
-            opacity: checked ? 1 : 0,
-            transition: { delay: checked ? 0.075 : 0, ease: 'easeInOut' },
+            opacity: 1,
+            transition: { ease: 'easeInOut' },
           }}
-          className="stroke-[4px] stroke-white"
           fill="none"
-          d="M 6 20
-             l 7 7
-             17.5-17.5"
+          d="M 7 22
+             l 7 8
+             20-19"
+          stroke-linejoin="round"
         />
       </svg>
-    </div>
+    </label>
   );
 }

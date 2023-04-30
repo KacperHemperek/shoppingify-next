@@ -1,7 +1,7 @@
 import AddItemForm from './AddItemForm';
 import Cart from './Cart';
 import ItemInfo from './ItemInfo';
-import List from './List';
+import ListView from './List';
 import useSidebar from '@/hooks/useSidebar';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
@@ -42,7 +42,7 @@ function DesktopSideBar() {
             <ItemInfo key={'itemInfo'} />
           )}
           {sidebarOption === 'list' && currentListId && (
-            <List listId={currentListId} key={'list'} />
+            <ListView listId={currentListId} key={'list'} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -76,7 +76,7 @@ function MobileSideBar() {
             <ItemInfo key={'itemInfo'} />
           )}
           {sidebarOption === 'list' && currentListId && (
-            <List listId={currentListId} key={'list'} />
+            <ListView listId={currentListId} key={'list'} />
           )}
         </motion.div>
       </AnimatePresence>

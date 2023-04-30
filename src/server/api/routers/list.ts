@@ -12,7 +12,7 @@ const itemSchema = z.object({
   itemId: z.number().min(1),
 });
 
-type FormatedItem = {
+export type FormatedItem = {
   name: string;
   amount: number;
   id: number;
