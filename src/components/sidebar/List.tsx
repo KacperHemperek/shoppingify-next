@@ -1,13 +1,13 @@
-import { ListState } from '@prisma/client';
+import { type ListState } from '@prisma/client';
 import classnames from 'classnames';
-import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { motion, useAnimationControls } from 'framer-motion';
+import { useMemo } from 'react';
 
 import useSidebar from '@/hooks/useSidebar';
 
 import { api } from '@/utils/api';
 
-import { FormatedItem } from '@/server/api/routers/list';
+import { type FormatedItem } from '@/server/api/routers/list';
 
 import Checkbox from '../Checkbox';
 import { BackButton } from './BackButton';
@@ -20,12 +20,25 @@ function ListItem({
   item: FormatedItem;
   disabled: boolean;
 }) {
+  const controls = useAnimationControls();
+
+  function onItemClicked() {
+    if (disabled) {
+      controls.start({
+        translateX: [-2, 3, -3, 2, 0],
+        transition: { duration: 0.5, ease: 'easeInOut' },
+      });
+    }
+  }
+
   return (
     <motion.label
       className={classnames(
         disabled && 'cursor-not-allowed',
         'flex items-center justify-between'
       )}
+      animate={controls}
+      onClick={onItemClicked}
     >
       <div
         className={classnames(
@@ -65,13 +78,17 @@ function List({
   return (
     <article className="space-y-6">
       {Object.entries(itemsGroupedByCategory).map(([category, items]) => (
-        <div className="flex flex-col">
+        <div className="flex flex-col" key={category}>
           <h5 className="mb-4 text-xs font-medium text-[#828282]">
             {category}
           </h5>
           <div className="space-y-4">
             {items.map((item) => (
-              <ListItem item={item} disabled={listState !== 'current'} />
+              <ListItem
+                key={item.name + item.id}
+                item={item}
+                disabled={listState !== 'current'}
+              />
             ))}
           </div>
         </div>
@@ -88,7 +105,6 @@ export default function ListView({ listId }: { listId: number }) {
   } = api.list.getListById.useQuery({ listId });
 
   const { setSidebarOption } = useSidebar();
-  const [checked, setChecked] = useState(false);
 
   if (fetchingListError) {
     return (
