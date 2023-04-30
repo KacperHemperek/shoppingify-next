@@ -3,6 +3,8 @@ import { type ListState } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { memo, useMemo } from 'react';
 
+import Loadingpage from '@/components/layounts/LoadingPage';
+
 import useSidebar from '@/hooks/useSidebar';
 
 import { type RouterOutputs, api } from '@/utils/api';
@@ -118,7 +120,7 @@ function History() {
   }
 
   if (fetchingLists) {
-    return <div>Loading lists</div>;
+    return <Loadingpage />;
   }
 
   return (

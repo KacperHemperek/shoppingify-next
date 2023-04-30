@@ -3,7 +3,7 @@ import { Discuss } from 'react-loader-spinner';
 
 function Loadingpage() {
   return (
-    <div className="relative flex h-screen w-full items-center justify-center">
+    <div className="flex h-screen w-full items-center justify-center">
       <Discuss
         visible={true}
         height="80"
