@@ -1,4 +1,19 @@
 import { type Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
+
+const hideVisually = plugin(({ addUtilities }) => {
+  addUtilities({
+    '.hide-visually': {
+      clip: 'rect(0 0 0 0)',
+      clipPath: 'inset(50%)',
+      height: '1px',
+      overflow: 'hidden',
+      position: 'absolute',
+      whiteSpace: 'nowrap',
+      width: '1px',
+    },
+  });
+});
 
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
@@ -27,5 +42,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [hideVisually],
 } satisfies Config;

@@ -1,18 +1,17 @@
-import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+
+import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
   getUserFromSession: publicProcedure.query(async ({ ctx }) => {
     try {
       const sessionId = ctx.cookies?.session;
 
-      console.log({ cookies: ctx.cookies });
-
       if (!sessionId) {
         return null;
       }
-      console.log({ sessionId });
+
       const session = await ctx.prisma.session.findFirst({
         where: { id: Number(sessionId) },
       });
@@ -125,7 +124,6 @@ export const userRouter = createTRPCRouter({
 
         ctx.setCookie('session', newSession.id);
       } catch (e) {
-        console.log(e);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong',

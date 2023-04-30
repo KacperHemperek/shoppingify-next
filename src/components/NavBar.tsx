@@ -6,18 +6,43 @@ import {
   ListBulletIcon,
   PlusIcon,
   ShoppingCartIcon,
+  ClipboardDocumentListIcon,
 } from '@heroicons/react/24/outline';
-import { useUser } from '@/hooks/useUser';
-import useSidebar from '@/hooks/useSidebar';
-
-import React from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
+import React from 'react';
+
+import useSidebar from '@/hooks/useSidebar';
+import { useUser } from '@/hooks/useUser';
+
 import { api } from '@/utils/api';
 
-function NavOption({ icon, to }: { to: string; icon: React.ReactNode }) {
+function NavButtonOption({
+  onClick,
+  children,
+}: {
+  children: React.ReactNode;
+  onClick: (e?: React.MouseEvent) => void;
+}) {
+  return (
+    <button onClick={onClick} className="flex h-14 items-center">
+      <div className="h-full w-2" />
+      <div className="flex h-full w-full items-center justify-center">
+        {children}
+      </div>
+    </button>
+  );
+}
+
+function NavLinkOption({
+  children,
+  to,
+}: {
+  to: string;
+  children: React.ReactNode;
+}) {
   const router = useRouter();
 
   return (
@@ -29,14 +54,14 @@ function NavOption({ icon, to }: { to: string; icon: React.ReactNode }) {
             layoutId={'nav-active'}
           />
           <div className="flex h-full w-full items-center justify-center">
-            {icon}
+            {children}
           </div>
         </>
       ) : (
         <>
           <div className="h-full w-2" />
           <div className="flex h-full w-full items-center justify-center">
-            {icon}
+            {children}
           </div>
         </>
       )}
@@ -46,18 +71,32 @@ function NavOption({ icon, to }: { to: string; icon: React.ReactNode }) {
 
 function NavBar() {
   const { user } = useUser();
-  // const { mutateAsync } = useLogout();
   const utils = api.useContext();
-  const { mutateAsync: logoutMutation } = api.user.logout.useMutation({
+  const router = useRouter();
+  const { mutate: logoutMutation } = api.user.logout.useMutation({
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
+      router.push('/login');
     },
   });
-  const { setSidebarOption } = useSidebar();
+
+  const {
+    data: currentListId,
+    isLoading: fetchingCurrentlist,
+    isError,
+  } = api.list.getCurrentListId.useQuery();
+
+  const { setSidebarOption, setShownListId: setCurrentListId } = useSidebar();
 
   const logout = async () => {
-    await logoutMutation();
-    // router.push('/login');
+    logoutMutation();
+  };
+
+  const showCurrentList = () => {
+    if (currentListId && !fetchingCurrentlist && !isError) {
+      setCurrentListId(currentListId);
+      setSidebarOption('list');
+    }
   };
 
   return (
@@ -70,33 +109,27 @@ function NavBar() {
           height={40}
         />
       </div>
-      <div className="flex flex-col space-y-6 md:space-y-12">
-        <NavOption
-          to={'/'}
-          icon={<ListBulletIcon className="h-6 w-6 text-neutral-dark" />}
-        />
-        <NavOption
-          to={'/history'}
-          icon={<ArrowPathIcon className="h-6 w-6 text-neutral-dark" />}
-        />
-        <NavOption
-          to={'/statistics'}
-          icon={<ChartBarSquareIcon className="h-6 w-6 text-neutral-dark" />}
-        />
+      <div className="flex flex-col space-y-6 xl:space-y-10">
+        <NavLinkOption to={'/'}>
+          <ListBulletIcon className="h-6 w-6 text-neutral-dark" />
+        </NavLinkOption>
+        <NavLinkOption to={'/history'}>
+          <ArrowPathIcon className="h-6 w-6 text-neutral-dark" />
+        </NavLinkOption>
+        <NavLinkOption to={'/statistics'}>
+          <ChartBarSquareIcon className="h-6 w-6 text-neutral-dark" />
+        </NavLinkOption>
+        <NavButtonOption onClick={showCurrentList}>
+          <ClipboardDocumentListIcon className="h-6 w-6 text-neutral-dark" />
+        </NavButtonOption>
         {user ? (
-          <button onClick={logout} className="flex h-14 items-center">
-            <div className="h-full w-2" />
-            <div className="flex h-full w-full items-center justify-center">
-              <ArrowLeftOnRectangleIcon className="h-6 w-6 text-neutral-dark" />
-            </div>
-          </button>
+          <NavButtonOption onClick={logout}>
+            <ArrowLeftOnRectangleIcon className="h-6 w-6 text-neutral-dark" />
+          </NavButtonOption>
         ) : (
-          <NavOption
-            to={'/login'}
-            icon={
-              <ArrowRightOnRectangleIcon className="h-6 w-6 text-neutral-dark" />
-            }
-          />
+          <NavLinkOption to={'/login'}>
+            <ArrowRightOnRectangleIcon className="h-6 w-6 text-neutral-dark" />
+          </NavLinkOption>
         )}
       </div>
       <div className="flex flex-col p-3 lg:p-6">

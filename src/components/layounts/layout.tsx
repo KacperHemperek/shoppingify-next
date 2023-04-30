@@ -1,10 +1,13 @@
-import { useUser } from '@/hooks/useUser';
-import NotLoggedIn from './NotLoggedIn';
-import Loadingpage from '@/components/layounts/LoadingPage';
-import SideBar from '@/components/SideBar';
-import NavBar from '@/components/NavBar';
 import { useRouter } from 'next/router';
 import type { PropsWithChildren } from 'react';
+
+import NavBar from '@/components/NavBar';
+import Loadingpage from '@/components/layounts/LoadingPage';
+import SideBar from '@/components/sidebar/SideBarContainer';
+
+import { useUser } from '@/hooks/useUser';
+
+import NotLoggedIn from './NotLoggedIn';
 
 function RouteGuard({ children }: PropsWithChildren) {
   const router = useRouter();
@@ -30,7 +33,7 @@ function RouteGuard({ children }: PropsWithChildren) {
   return <>{children}</>;
 }
 
-export type ShowAddItemOptions = 'itemInfo' | 'addItem' | 'cart';
+export type ShowAddItemOptions = 'itemInfo' | 'addItem' | 'cart' | 'list';
 
 function Layout({ children }: PropsWithChildren) {
   const { user } = useUser();

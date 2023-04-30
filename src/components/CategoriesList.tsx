@@ -1,7 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import type { CategoryType } from '@/types/Categoy.interface';
+
 import ItemCard from '@/components/ItemCard';
+
 import useSidebar from '@/hooks/useSidebar';
+
+import type { CategoryType } from '@/types/Categoy.interface';
 
 function Category({ items, name, id }: CategoryType) {
   return (

@@ -1,13 +1,16 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { AnimationProps } from 'framer-motion';
-import { useMemo, useState } from 'react';
-import useMeasure from 'react-use-measure';
-import { useForm } from 'react-hook-form';
-import FormSubmitButton from '@/components/FormSubmitButton';
 import { useRouter } from 'next/router';
-import { api } from '@/utils/api';
+import { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import useMeasure from 'react-use-measure';
+
 import ErrorAlert from '@/components/ErrorAlert';
-import { type TRPCClientErrorLike } from '@trpc/client';
+import FormSubmitButton from '@/components/FormSubmitButton';
+
+import { formatErrorMessage } from '@/lib/trpcErrorFormater';
+
+import { api } from '@/utils/api';
 
 type LoginFormInput = {
   email: string;
@@ -62,7 +65,7 @@ function LoginFormContent() {
           <span className="mb-2 ">Email</span>
           <input
             type="text"
-            className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+            className="input"
             placeholder={'Enter an email'}
             {...register('email')}
             disabled={loggingIn}
@@ -72,7 +75,7 @@ function LoginFormContent() {
           <span className="mb-2 mt-6">Password</span>
           <input
             type="password"
-            className="w-full rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+            className="input"
             placeholder={'Enter a password'}
             {...register('password')}
             disabled={loggingIn}
@@ -95,20 +98,6 @@ type RegisterFormInputs = {
   email: string;
   password: string;
 };
-
-function formatErrorMessage(
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  error: TRPCClientErrorLike<any> | null
-): string | undefined {
-  try {
-    if (error && Array.isArray(JSON.parse(error.message))) {
-      return JSON.parse(error.message)[0].message;
-    }
-    return error?.message;
-  } catch (e) {
-    return error?.message;
-  }
-}
 
 function RegisterFormContent() {
   const {
@@ -160,7 +149,7 @@ function RegisterFormContent() {
         <span className="mb-2"></span>
         <input
           type="text"
-          className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+          className="input"
           placeholder={'Enter an email'}
           {...register('email', { required: true })}
           disabled={signingUp}
@@ -171,7 +160,7 @@ function RegisterFormContent() {
         <span className="mb-2"></span>
         <input
           type="text"
-          className=" rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+          className="input"
           placeholder={'Enter your name'}
           {...register('name', { required: true })}
           disabled={signingUp}
@@ -182,7 +171,7 @@ function RegisterFormContent() {
         <span className="mb-2"></span>
         <input
           type="password"
-          className="w-full rounded-xl border-2 border-neutral-light p-4 outline-2 outline-primary transition-all placeholder:text-sm placeholder:text-neutral-light focus:placeholder:text-primary"
+          className="input"
           placeholder={'Enter a password'}
           {...register('password', { required: true })}
           disabled={signingUp}

@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import type { PropsWithChildren } from 'react';
+
 import type { ShowAddItemOptions } from '@/components/layounts/layout';
+
 import type { Item } from '@/types/Item.interface';
 
 type SidebarContextType = {
@@ -8,6 +10,10 @@ type SidebarContextType = {
   categoryId: number | null;
   show: (item: Item, categoryId: number) => void;
   hide: (mobile?: boolean) => void;
+  shownListId: number | undefined;
+  setShownListId: React.Dispatch<
+    React.SetStateAction<number | undefined | undefined>
+  >;
   sidebarOption: ShowAddItemOptions | undefined;
   setSidebarOption: React.Dispatch<
     React.SetStateAction<ShowAddItemOptions | undefined>
@@ -21,15 +27,19 @@ export const SidebarContext = React.createContext<SidebarContextType>({
   show: () => {},
   /* eslint-disable  @typescript-eslint/no-empty-function */
   hide: () => {},
-  sidebarOption: undefined,
   /* eslint-disable  @typescript-eslint/no-empty-function */
   setSidebarOption: () => {},
+  /* eslint-disable  @typescript-eslint/no-empty-function */
+  setShownListId: () => {},
+  sidebarOption: undefined,
+  shownListId: undefined,
 });
 
 function SidebarContextProvider({ children }: PropsWithChildren) {
   const [sidebarOption, setSidebarOption] = useState<
     ShowAddItemOptions | undefined
   >();
+  const [currentList, setCurrentList] = useState<number | undefined>();
   const [item, setItem] = useState<Item | null>(null);
   const [categoryId, setCategoryId] = useState<number | null>(null);
 
@@ -45,7 +55,16 @@ function SidebarContextProvider({ children }: PropsWithChildren) {
 
   return (
     <SidebarContext.Provider
-      value={{ sidebarOption, setSidebarOption, item, show, hide, categoryId }}
+      value={{
+        sidebarOption,
+        setSidebarOption,
+        item,
+        show,
+        hide,
+        categoryId,
+        setShownListId: setCurrentList,
+        shownListId: currentList,
+      }}
     >
       {children}
     </SidebarContext.Provider>

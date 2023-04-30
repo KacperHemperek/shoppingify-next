@@ -1,9 +1,11 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
+
 import CategoriesList from '@/components/CategoriesList';
+import Loadingpage from '@/components/layounts/LoadingPage';
 
 import type { CategoryType } from '@/types/Categoy.interface';
-import Loadingpage from '@/components/layounts/LoadingPage';
+
 import { api } from '@/utils/api';
 
 function filterCategories(
@@ -13,15 +15,18 @@ function filterCategories(
   if (!data) {
     return [];
   }
-
-  const reg = new RegExp(query, 'gi');
-
   return data
-    .filter((category) => category.items.some((item) => reg.test(item.name)))
+    .filter((category) =>
+      category.items.some((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      )
+    )
     .map(({ id, items, name }) => ({
       id,
       name,
-      items: items.filter((item) => item.name.match(reg)),
+      items: items.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      ),
     }));
 }
 

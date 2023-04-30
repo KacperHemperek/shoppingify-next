@@ -1,7 +1,8 @@
+import type { TRPCClientErrorBase } from '@trpc/client';
+import React from 'react';
+
 import { api } from '@/utils/api';
 import type { RouterOutputs } from '@/utils/api';
-import React from 'react';
-import type { TRPCClientErrorBase } from '@trpc/client';
 
 export type User = {
   name: string;

@@ -1,14 +1,18 @@
-import { createTRPCRouter, userProcedure } from '@/server/api/trpc';
-import type { CategoryType } from '@/types/Categoy.interface';
-import type { Item } from '@/types/Item.interface';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+
+import type { CategoryType } from '@/types/Categoy.interface';
+import type { Item } from '@/types/Item.interface';
+
+import {
+  createTRPCRouter,
+  userProcedure,
+  userProtectedProcedure,
+} from '@/server/api/trpc';
 
 export const itemRouter = createTRPCRouter({
   getAll: userProcedure.query(async ({ ctx }): Promise<CategoryType[]> => {
     try {
-      console.log(ctx.user);
-
       if (!ctx.user) {
         return [];
       }
@@ -31,11 +35,10 @@ export const itemRouter = createTRPCRouter({
 
       return result;
     } catch (e) {
-      console.log(e);
       return [];
     }
   }),
-  add: userProcedure
+  add: userProtectedProcedure
     .input(
       z.object({
         name: z.string().min(2, 'Name must have least two letters'),
@@ -45,10 +48,6 @@ export const itemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.user) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
-      }
-
       try {
         if (!input.categoryId) {
           const newCategory = await ctx.prisma.category.create({
@@ -58,7 +57,7 @@ export const itemRouter = createTRPCRouter({
               items: { create: { desc: input.desc, name: input.name } },
             },
           });
-          console.log(newCategory);
+
           return;
         }
 
@@ -69,10 +68,9 @@ export const itemRouter = createTRPCRouter({
             categoryId: input.categoryId,
           },
         });
-        console.log(newItem);
+
         return;
       } catch (e) {
-        console.log(e);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'There was a problem creating new item',
@@ -80,12 +78,9 @@ export const itemRouter = createTRPCRouter({
         });
       }
     }),
-  delete: userProcedure
+  delete: userProtectedProcedure
     .input(z.object({ itemId: z.number(), categoryName: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.user) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
-      }
       try {
         const category = await ctx.prisma.category.findFirst({
           where: { userId: ctx.user.id, name: input.categoryName },
