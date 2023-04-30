@@ -32,9 +32,9 @@ export default function Checkbox({
         viewBox="0 0 40 40"
         className={classnames(
           disabled
-            ? 'stroke-neutral-light border-neutral-light cursor-not-allowed'
-            : 'stroke-primary border-primary cursor-pointer',
-          'w-6 h-6 rounded-md border-2  duration-100 group-focus:outline-4 stroke-[4px]'
+            ? 'cursor-not-allowed border-neutral-light stroke-neutral-light'
+            : 'cursor-pointer border-primary stroke-primary',
+          'h-6 w-6 rounded-md border-2  stroke-[4px] duration-100 group-focus:outline-4'
         )}
       >
         <motion.path

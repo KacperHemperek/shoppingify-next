@@ -1,13 +1,16 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { AnimationProps } from 'framer-motion';
-import { useMemo, useState } from 'react';
-import useMeasure from 'react-use-measure';
-import { useForm } from 'react-hook-form';
-import FormSubmitButton from '@/components/FormSubmitButton';
 import { useRouter } from 'next/router';
-import { api } from '@/utils/api';
+import { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import useMeasure from 'react-use-measure';
+
 import ErrorAlert from '@/components/ErrorAlert';
+import FormSubmitButton from '@/components/FormSubmitButton';
+
 import { formatErrorMessage } from '@/lib/trpcErrorFormater';
+
+import { api } from '@/utils/api';
 
 type LoginFormInput = {
   email: string;

@@ -1,11 +1,13 @@
+import { AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+
+import useSidebar from '@/hooks/useSidebar';
+
 import AddItemForm from './AddItemForm';
 import Cart from './Cart';
 import ItemInfo from './ItemInfo';
 import ListView from './List';
-import useSidebar from '@/hooks/useSidebar';
-import { AnimatePresence } from 'framer-motion';
-import { motion } from 'framer-motion';
-import { useEffect } from 'react';
 
 const x = '100%';
 

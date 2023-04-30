@@ -1,9 +1,11 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
+
 import CategoriesList from '@/components/CategoriesList';
+import Loadingpage from '@/components/layounts/LoadingPage';
 
 import type { CategoryType } from '@/types/Categoy.interface';
-import Loadingpage from '@/components/layounts/LoadingPage';
+
 import { api } from '@/utils/api';
 
 function filterCategories(

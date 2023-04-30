@@ -1,6 +1,3 @@
-import useSidebar from '@/hooks/useSidebar';
-import { useUser } from '@/hooks/useUser';
-import { api } from '@/utils/api';
 import {
   ArrowLeftOnRectangleIcon,
   ArrowPathIcon,
@@ -16,6 +13,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
+
+import useSidebar from '@/hooks/useSidebar';
+import { useUser } from '@/hooks/useUser';
+
+import { api } from '@/utils/api';
 
 function NavButtonOption({
   onClick,

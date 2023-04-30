@@ -1,6 +1,8 @@
-import { BackButton } from './BackButton';
 import useSidebar from '@/hooks/useSidebar';
+
 import { api } from '@/utils/api';
+
+import { BackButton } from './BackButton';
 
 function ItemInfo() {
   const { item, setSidebarOption } = useSidebar();

@@ -14,7 +14,6 @@
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
-import { prisma } from '@/server/db';
 import { type User } from '@prisma/client';
 
 /**
@@ -30,6 +29,8 @@ import { serialize, type CookieSerializeOptions } from 'cookie';
 import { type NextApiResponse } from 'next';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
+
+import { prisma } from '@/server/db';
 
 type CreateContextOptions = Record<string, never>;
 

@@ -1,8 +1,10 @@
-import useSidebar from '@/hooks/useSidebar';
-import { type RouterOutputs, api } from '@/utils/api';
 import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { ListState } from '@prisma/client';
 import { memo, useMemo } from 'react';
+
+import useSidebar from '@/hooks/useSidebar';
+
+import { type RouterOutputs, api } from '@/utils/api';
 
 function TagComponent({ variant }: { variant: ListState }) {
   const wrapperClassName: { [key in typeof variant]: string } = {
@@ -44,24 +46,24 @@ function SingleListItemComponent(list: SingleItemProps) {
   return (
     <div
       onClick={goToListSidebarView}
-      className="bg-white rounded-xl flex items-center p-5 shadow-md cursor-pointer "
+      className="flex cursor-pointer items-center rounded-xl bg-white p-5 shadow-md "
     >
-      <div className="flex flex-col md:flex-row items-start justify-start md:justify-between md:items-center w-full">
-        <p className="truncate font-medium mb-2 md:mb-0">{list.name}</p>
-        <div className="grid grid-cols-6 gap-4 max-w-[240px] xl:max-w-sm md:w-full md:grid-cols-12">
-          <div className="flex items-center col-span-4 md:col-span-8 md:justify-end text-neutral-light min-w-fit gap-2">
-            <CalendarIcon className="w-5 h-5" />
+      <div className="flex w-full flex-col items-start justify-start md:flex-row md:items-center md:justify-between">
+        <p className="mb-2 truncate font-medium md:mb-0">{list.name}</p>
+        <div className="grid max-w-[240px] grid-cols-6 gap-4 md:w-full md:grid-cols-12 xl:max-w-sm">
+          <div className="col-span-4 flex min-w-fit items-center gap-2 text-neutral-light md:col-span-8 md:justify-end">
+            <CalendarIcon className="h-5 w-5" />
             <p className="text-sm ">{dateToDisplay}</p>
           </div>
-          <div className="flex justify-center items-center col-span-1 md:col-span-3 ">
+          <div className="col-span-1 flex items-center justify-center md:col-span-3 ">
             <Tag variant={list.state} />
           </div>
-          <div className="w-min col-span-1 justify-end items-center hidden md:flex">
-            <ChevronRightIcon className="text-primary w-5 h-5" />
+          <div className="col-span-1 hidden w-min items-center justify-end md:flex">
+            <ChevronRightIcon className="h-5 w-5 text-primary" />
           </div>
         </div>
       </div>
-      <ChevronRightIcon className="text-primary w-5 h-5 block md:hidden" />
+      <ChevronRightIcon className="block h-5 w-5 text-primary md:hidden" />
     </div>
   );
 }
@@ -121,9 +123,9 @@ function History() {
           Shopping History
         </h1>
         {Object.entries(listsGroupedByDate).map(([date, lists]) => (
-          <article className="flex flex-col mt-12" key={date}>
-            <h5 className="text-xs font-medium mb-4">{date}</h5>
-            <div className="space-y-6 w-full">
+          <article className="mt-12 flex flex-col" key={date}>
+            <h5 className="mb-4 text-xs font-medium">{date}</h5>
+            <div className="w-full space-y-6">
               {lists.map((list) => (
                 <SingleListItem {...list} key={list.id + list.name} />
               ))}

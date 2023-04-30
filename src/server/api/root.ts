@@ -1,8 +1,9 @@
 import { createTRPCRouter } from '@/server/api/trpc';
+
 import { categoryRouter } from './routers/category';
 import { itemRouter } from './routers/items';
-import { userRouter } from './routers/user';
 import { listRouter } from './routers/list';
+import { userRouter } from './routers/user';
 
 /**
  * This is the primary router for your server.

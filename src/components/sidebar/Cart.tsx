@@ -1,16 +1,3 @@
-import { ItemAmount } from './ItemAmount';
-import useSidebar from '@/hooks/useSidebar';
-import { formatErrorMessage } from '@/lib/trpcErrorFormater';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  changeItemAmount,
-  getCategories,
-  removeItem,
-  type NewListItem,
-  getAllItems,
-  clearList,
-} from '@/redux/slices/newListSlice';
-import { api } from '@/utils/api';
 import {
   MinusIcon,
   PlusIcon,
@@ -21,6 +8,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { forwardRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
+
+import useSidebar from '@/hooks/useSidebar';
+
+import { formatErrorMessage } from '@/lib/trpcErrorFormater';
+
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  changeItemAmount,
+  getCategories,
+  removeItem,
+  type NewListItem,
+  getAllItems,
+  clearList,
+} from '@/redux/slices/newListSlice';
+
+import { api } from '@/utils/api';
+
+import { ItemAmount } from './ItemAmount';
 
 const CartItem = forwardRef(
   ({ amount, category, id, name }: NewListItem, _ref) => {
@@ -126,11 +131,11 @@ export default function Cart() {
       className="flex h-full flex-col justify-between  bg-primary-light"
       key={'cart'}
     >
-      <div className="overflow-y-scroll px-4 flex flex-col py-8 xl:px-12">
+      <div className="flex flex-col overflow-y-scroll px-4 py-8 xl:px-12">
         <button
           type="button"
           onClick={() => setSidebarOption(undefined)}
-          className="md:hidden self-end mb-4"
+          className="mb-4 self-end md:hidden"
         >
           <XMarkIcon className="h-6 w-6 text-black" />
         </button>
@@ -139,7 +144,7 @@ export default function Cart() {
 
           <button
             onClick={() => setSidebarOption('addItem')}
-            className="bg-white rounded-xl  px-6 py-2 font-bold text-neutral-dark"
+            className="rounded-xl bg-white  px-6 py-2 font-bold text-neutral-dark"
           >
             Add Item
           </button>

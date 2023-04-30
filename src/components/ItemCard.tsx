@@ -1,14 +1,17 @@
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
+
 import useSidebar from '@/hooks/useSidebar';
-import { type Item } from '@/types/Item.interface';
+
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   addItem,
   itemAlreadyOnLIst,
   removeItem,
 } from '@/redux/slices/newListSlice';
+
+import { type Item } from '@/types/Item.interface';
 
 const ItemCardButton = ({
   children,

@@ -1,10 +1,13 @@
-import NotLoggedIn from './NotLoggedIn';
+import { useRouter } from 'next/router';
+import type { PropsWithChildren } from 'react';
+
 import NavBar from '@/components/NavBar';
 import Loadingpage from '@/components/layounts/LoadingPage';
 import SideBar from '@/components/sidebar/SideBarContainer';
+
 import { useUser } from '@/hooks/useUser';
-import { useRouter } from 'next/router';
-import type { PropsWithChildren } from 'react';
+
+import NotLoggedIn from './NotLoggedIn';
 
 function RouteGuard({ children }: PropsWithChildren) {
   const router = useRouter();

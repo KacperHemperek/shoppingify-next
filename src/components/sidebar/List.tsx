@@ -1,12 +1,17 @@
+import { ListState } from '@prisma/client';
+import classnames from 'classnames';
+import { motion } from 'framer-motion';
+import { useMemo, useState } from 'react';
+
+import useSidebar from '@/hooks/useSidebar';
+
+import { api } from '@/utils/api';
+
+import { FormatedItem } from '@/server/api/routers/list';
+
 import Checkbox from '../Checkbox';
 import { BackButton } from './BackButton';
 import { ItemAmount } from './ItemAmount';
-import useSidebar from '@/hooks/useSidebar';
-import { FormatedItem } from '@/server/api/routers/list';
-import { api } from '@/utils/api';
-import { ListState } from '@prisma/client';
-import classnames from 'classnames';
-import { useMemo, useState } from 'react';
 
 function ListItem({
   item,
@@ -16,10 +21,10 @@ function ListItem({
   disabled: boolean;
 }) {
   return (
-    <label
+    <motion.label
       className={classnames(
         disabled && 'cursor-not-allowed',
-        'flex justify-between items-center'
+        'flex items-center justify-between'
       )}
     >
       <div
@@ -32,7 +37,7 @@ function ListItem({
         {item.name}
       </div>
       <ItemAmount amount={item.amount} />
-    </label>
+    </motion.label>
   );
 }
 
@@ -110,23 +115,23 @@ export default function ListView({ listId }: { listId: number }) {
   }
 
   return (
-    <div className="flex h-full flex-col justify-between  bg-primary-light p">
-      <div className="overflow-y-scroll px-4 flex flex-col py-8 xl:px-12">
-        <div className="md:hidden block">
+    <div className="p flex h-full flex-col  justify-between bg-primary-light">
+      <div className="flex flex-col overflow-y-scroll px-4 py-8 xl:px-12">
+        <div className="block md:hidden">
           <BackButton
             onClick={() => {
               setSidebarOption(undefined);
             }}
           />
         </div>
-        <div className="md:block hidden">
+        <div className="hidden md:block">
           <BackButton
             onClick={() => {
               setSidebarOption('cart');
             }}
           />
         </div>
-        <h2 className="text-2xl font-bold text-neutral-dark mb-6">
+        <h2 className="mb-6 text-2xl font-bold text-neutral-dark">
           {listData.name}
         </h2>
 
