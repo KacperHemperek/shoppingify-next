@@ -1,16 +1,22 @@
 import useSidebar from '@/hooks/useSidebar';
 
+import { useAppDispatch } from '@/redux/hooks';
+import { addItem } from '@/redux/slices/newListSlice';
+
 import { api } from '@/utils/api';
 
 import { BackButton } from './BackButton';
 
 function ItemInfo() {
+  const dispatch = useAppDispatch();
+
   const { item, setSidebarOption } = useSidebar();
   const utils = api.useContext();
 
-  const { mutateAsync: deleteItemMutation } = api.item.delete.useMutation({
+  const { mutate: deleteItemMutation } = api.item.delete.useMutation({
     onSuccess: () => {
       utils.item.getAll.invalidate();
+      setSidebarOption('cart');
     },
   });
 
@@ -20,12 +26,22 @@ function ItemInfo() {
     return <div>There was a problem retrieving item</div>;
   }
 
-  async function deleteItem(itemId: number, categoryName: string) {
-    try {
-      await deleteItemMutation({ itemId, categoryName });
+  function deleteItem(itemId: number, categoryName: string) {
+    deleteItemMutation({ itemId, categoryName });
+  }
+
+  function addToList() {
+    if (item) {
+      dispatch(
+        addItem({
+          categoryName: item.category,
+          itemId: item.id,
+          itemName: item.name,
+        })
+      );
 
       setSidebarOption('cart');
-    } catch (e) {}
+    }
   }
 
   return (
@@ -74,7 +90,7 @@ function ItemInfo() {
         </button>
         <button
           type="submit"
-          disabled={false}
+          onClick={addToList}
           className="submit-button px-6 py-4"
         >
           Add to list
