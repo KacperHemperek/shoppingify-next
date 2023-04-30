@@ -1,16 +1,27 @@
 import useSidebar from '@/hooks/useSidebar';
 
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { addItem } from '@/redux/slices/newListSlice';
+import { itemAlreadyOnLIst } from '@/redux/slices/newListSlice';
+import { removeItem } from '@/redux/slices/newListSlice';
+
 import { api } from '@/utils/api';
 
 import { BackButton } from './BackButton';
 
 function ItemInfo() {
   const { item, setSidebarOption } = useSidebar();
+
+  const dispatch = useAppDispatch();
+  const itemOnList = useAppSelector((state) =>
+    itemAlreadyOnLIst(state, item?.id ?? -1, item?.category ?? '')
+  );
   const utils = api.useContext();
 
-  const { mutateAsync: deleteItemMutation } = api.item.delete.useMutation({
+  const { mutate: deleteItemMutation } = api.item.delete.useMutation({
     onSuccess: () => {
       utils.item.getAll.invalidate();
+      setSidebarOption('cart');
     },
   });
 
@@ -20,12 +31,25 @@ function ItemInfo() {
     return <div>There was a problem retrieving item</div>;
   }
 
-  async function deleteItem(itemId: number, categoryName: string) {
-    try {
-      await deleteItemMutation({ itemId, categoryName });
+  function deleteItem(itemId: number, categoryName: string) {
+    deleteItemMutation({ itemId, categoryName });
+  }
 
+  function toggleItemOnList() {
+    if (item) {
+      if (!itemOnList) {
+        dispatch(
+          addItem({
+            categoryName: item.category,
+            itemId: item.id,
+            itemName: item.name,
+          })
+        );
+      } else {
+        dispatch(removeItem({ itemId: item.id, categoryName: item.category }));
+      }
       setSidebarOption('cart');
-    } catch (e) {}
+    }
   }
 
   return (
@@ -74,10 +98,10 @@ function ItemInfo() {
         </button>
         <button
           type="submit"
-          disabled={false}
+          onClick={toggleItemOnList}
           className="submit-button px-6 py-4"
         >
-          Add to list
+          {itemOnList ? 'Remove' : 'Add to list'}
         </button>
       </div>
     </div>
