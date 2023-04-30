@@ -10,8 +10,8 @@ type SidebarContextType = {
   categoryId: number | null;
   show: (item: Item, categoryId: number) => void;
   hide: (mobile?: boolean) => void;
-  currentListId: number | undefined;
-  setCurrentListId: React.Dispatch<
+  shownListId: number | undefined;
+  setShownListId: React.Dispatch<
     React.SetStateAction<number | undefined | undefined>
   >;
   sidebarOption: ShowAddItemOptions | undefined;
@@ -30,9 +30,9 @@ export const SidebarContext = React.createContext<SidebarContextType>({
   /* eslint-disable  @typescript-eslint/no-empty-function */
   setSidebarOption: () => {},
   /* eslint-disable  @typescript-eslint/no-empty-function */
-  setCurrentListId: () => {},
+  setShownListId: () => {},
   sidebarOption: undefined,
-  currentListId: undefined,
+  shownListId: undefined,
 });
 
 function SidebarContextProvider({ children }: PropsWithChildren) {
@@ -62,8 +62,8 @@ function SidebarContextProvider({ children }: PropsWithChildren) {
         show,
         hide,
         categoryId,
-        setCurrentListId: setCurrentList,
-        currentListId: currentList,
+        setShownListId: setCurrentList,
+        shownListId: currentList,
       }}
     >
       {children}

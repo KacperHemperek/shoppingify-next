@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
+import ModalContextProvider from '@/components/context/ModalContext';
 import SidebarContextProvider from '@/components/context/SidebarContext';
 import { UserContextProvider } from '@/components/context/UserContext';
 import Layout from '@/components/layounts/layout';
@@ -18,12 +19,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <UserContextProvider>
-          <SidebarContextProvider>
-            <Layout>
-              <Toaster />
-              <Component {...pageProps} />
-            </Layout>
-          </SidebarContextProvider>
+          <ModalContextProvider>
+            <SidebarContextProvider>
+              <Layout>
+                <Toaster />
+                <Component {...pageProps} />
+              </Layout>
+            </SidebarContextProvider>
+          </ModalContextProvider>
         </UserContextProvider>
       </PersistGate>
     </ReduxProvider>

@@ -81,20 +81,20 @@ function NavBar() {
   });
 
   const {
-    data: currentList,
+    data: currentListId,
     isLoading: fetchingCurrentlist,
     isError,
-  } = api.list.getCurrentList.useQuery();
+  } = api.list.getCurrentListId.useQuery();
 
-  const { setSidebarOption, setCurrentListId } = useSidebar();
+  const { setSidebarOption, setShownListId: setCurrentListId } = useSidebar();
 
   const logout = async () => {
     logoutMutation();
   };
 
   const showCurrentList = () => {
-    if (currentList && !fetchingCurrentlist && !isError) {
-      setCurrentListId(currentList.id);
+    if (currentListId && !fetchingCurrentlist && !isError) {
+      setCurrentListId(currentListId);
       setSidebarOption('list');
     }
   };

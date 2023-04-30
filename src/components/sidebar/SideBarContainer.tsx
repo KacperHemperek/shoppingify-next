@@ -24,7 +24,7 @@ const variants = {
 };
 
 function DesktopSideBar() {
-  const { sidebarOption, item, currentListId } = useSidebar();
+  const { sidebarOption, item, shownListId: currentListId } = useSidebar();
 
   return (
     <div className="hidden w-[calc(100%-72px)] md:block md:w-full md:max-w-[300px] xl:max-w-sm">
@@ -53,7 +53,7 @@ function DesktopSideBar() {
 }
 
 function MobileSideBar() {
-  const { sidebarOption, item, currentListId } = useSidebar();
+  const { sidebarOption, item, shownListId: currentListId } = useSidebar();
 
   return (
     <motion.div

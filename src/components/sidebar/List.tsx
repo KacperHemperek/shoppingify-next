@@ -21,7 +21,7 @@ function ListItem({
   disabled: boolean;
 }) {
   const controls = useAnimationControls();
-  const { currentListId } = useSidebar();
+  const { shownListId: currentListId } = useSidebar();
 
   const apiUtils = api.useContext();
 

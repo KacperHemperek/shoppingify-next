@@ -27,7 +27,7 @@ const Tag = memo(TagComponent);
 type SingleItemProps = RouterOutputs['list']['getAll'][number];
 
 function SingleListItemComponent(list: SingleItemProps) {
-  const { setSidebarOption, setCurrentListId } = useSidebar();
+  const { setSidebarOption, setShownListId: setCurrentListId } = useSidebar();
 
   const dateToDisplay = Intl.DateTimeFormat('en-US', {
     weekday: 'short',

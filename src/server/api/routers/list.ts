@@ -157,28 +157,12 @@ export const listRouter = createTRPCRouter({
         return formatListToContainItemsWithData(list);
       } catch (e) {}
     }),
-  getCurrentList: userProtectedProcedure.query(async ({ ctx }) => {
+  getCurrentListId: userProtectedProcedure.query(async ({ ctx }) => {
     try {
       const currentList = await ctx.prisma.list.findFirst({
         where: { userId: ctx.user.id, state: 'current' },
         select: {
-          name: true,
           id: true,
-          state: true,
-          items: {
-            select: {
-              item: {
-                select: {
-                  category: { select: { name: true } },
-                  id: true,
-                  name: true,
-                },
-              },
-              checked: true,
-              amount: true,
-              id: true,
-            },
-          },
         },
       });
 
@@ -189,7 +173,7 @@ export const listRouter = createTRPCRouter({
         });
       }
 
-      return formatListToContainItemsWithData(currentList);
+      return currentList.id;
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
