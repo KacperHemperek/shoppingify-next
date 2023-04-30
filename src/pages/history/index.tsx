@@ -92,7 +92,6 @@ function History() {
     } = {};
 
     for (const list of lists) {
-      console.log(list.createdAt.toDateString());
       const formatedDate = Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: 'long',

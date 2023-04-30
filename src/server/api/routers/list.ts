@@ -92,8 +92,6 @@ export const listRouter = createTRPCRouter({
             items: { create: itemsToCreate },
           },
         });
-
-        console.log({ newList });
       } catch (e) {
         console.error(e);
         throw new TRPCError({

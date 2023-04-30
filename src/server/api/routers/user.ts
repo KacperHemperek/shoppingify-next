@@ -8,12 +8,10 @@ export const userRouter = createTRPCRouter({
     try {
       const sessionId = ctx.cookies?.session;
 
-      console.log({ cookies: ctx.cookies });
-
       if (!sessionId) {
         return null;
       }
-      console.log({ sessionId });
+
       const session = await ctx.prisma.session.findFirst({
         where: { id: Number(sessionId) },
       });
@@ -126,7 +124,6 @@ export const userRouter = createTRPCRouter({
 
         ctx.setCookie('session', newSession.id);
       } catch (e) {
-        console.log(e);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong',

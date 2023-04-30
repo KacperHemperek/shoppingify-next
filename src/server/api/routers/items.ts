@@ -35,7 +35,6 @@ export const itemRouter = createTRPCRouter({
 
       return result;
     } catch (e) {
-      console.log(e);
       return [];
     }
   }),
@@ -58,7 +57,7 @@ export const itemRouter = createTRPCRouter({
               items: { create: { desc: input.desc, name: input.name } },
             },
           });
-          console.log(newCategory);
+
           return;
         }
 
@@ -69,10 +68,9 @@ export const itemRouter = createTRPCRouter({
             categoryId: input.categoryId,
           },
         });
-        console.log(newItem);
+
         return;
       } catch (e) {
-        console.log(e);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'There was a problem creating new item',

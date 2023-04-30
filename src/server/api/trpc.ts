@@ -175,7 +175,6 @@ const getUserInContextMiddleware = t.middleware(async ({ ctx, next }) => {
       },
     });
   } catch (e) {
-    console.log(e);
     return next({
       ctx: {
         ...ctx,

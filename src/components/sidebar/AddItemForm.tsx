@@ -26,7 +26,7 @@ function AddItemForm() {
 
   const utils = api.useContext();
 
-  const { mutateAsync: createItemMutation, isLoading: creatingItem } =
+  const { mutate: createItemMutation, isLoading: creatingItem } =
     api.item.add.useMutation({
       onSuccess: () => {
         utils.item.getAll.invalidate();
@@ -34,23 +34,18 @@ function AddItemForm() {
     });
 
   const addNewItem = async (data: AddItemType) => {
-    try {
-      const categoryId = dropdownOptions?.find(
-        (option) => option.name.toLowerCase() === data.category.toLowerCase()
-      )?.id;
-      await createItemMutation({
-        categoryName: data.category.trim(),
-        desc: data.desc.trim(),
-        name: data.name.trim(),
-        categoryId,
-      });
+    const categoryId = dropdownOptions?.find(
+      (option) => option.name.toLowerCase() === data.category.toLowerCase()
+    )?.id;
+    createItemMutation({
+      categoryName: data.category.trim(),
+      desc: data.desc.trim(),
+      name: data.name.trim(),
+      categoryId,
+    });
 
-      console.log(data);
-      reset();
-      setSidebarOption('cart');
-    } catch (e) {
-      console.log(e);
-    }
+    reset();
+    setSidebarOption('cart');
   };
 
   return (

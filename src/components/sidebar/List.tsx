@@ -195,7 +195,7 @@ export default function ListView({ listId }: { listId?: number }) {
             }}
           />
         </div>
-        <h2 className="mb-6 text-2xl font-bold text-neutral-dark">
+        <h2 className="my-6 text-2xl font-bold text-neutral-dark">
           {listData.name}
         </h2>
 
