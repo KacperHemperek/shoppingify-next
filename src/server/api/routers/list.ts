@@ -157,29 +157,14 @@ export const listRouter = createTRPCRouter({
       } catch (e) {}
     }),
   getCurrentListId: userProtectedProcedure.query(async ({ ctx }) => {
-    try {
-      const currentList = await ctx.prisma.list.findFirst({
-        where: { userId: ctx.user.id, state: 'current' },
-        select: {
-          id: true,
-        },
-      });
+    const currentList = await ctx.prisma.list.findFirst({
+      where: { userId: ctx.user.id, state: 'current' },
+      select: {
+        id: true,
+      },
+    });
 
-      if (!currentList) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'List was not found',
-        });
-      }
-
-      return currentList.id;
-    } catch (e) {
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Unknown server error occured',
-        cause: e,
-      });
-    }
+    return currentList?.id ?? null;
   }),
   toggleListItem: userProtectedProcedure
     .input(
