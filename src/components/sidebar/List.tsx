@@ -72,7 +72,7 @@ function ListItem({
   return (
     <motion.label
       className={classnames(
-        disabled && 'cursor-not-allowed',
+        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         'flex items-center justify-between'
       )}
       animate={controls}
@@ -92,7 +92,19 @@ function ListItem({
           }}
           newValue={!item.checked}
         />
-        {item.name}
+        <div className="relative flex ">
+          <motion.div
+            className={classnames(
+              disabled ? 'bg-neutral-light' : 'bg-neutral-dark',
+              'h-[1px] absolute self-start top-[55%] -translate-y-1/2'
+            )}
+            animate={{
+              width: item.checked ? '100%' : '0%',
+              transition: { duration: 0.2, ease: 'easeInOut' },
+            }}
+          ></motion.div>
+          <span className="mx-1">{item.name}</span>
+        </div>
       </div>
       <ItemAmount amount={item.amount} />
     </motion.label>
