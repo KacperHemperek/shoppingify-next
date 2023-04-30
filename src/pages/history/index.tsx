@@ -78,7 +78,7 @@ function History() {
   } = api.list.getAll.useQuery();
 
   const listsGroupedByDate = useMemo(() => {
-    if (!lists) return [];
+    if (!lists) return {};
     lists?.sort((listA, listB) => {
       const [dateA, dateB] = [
         new Date(listA.createdAt),
@@ -111,7 +111,7 @@ function History() {
     return <div>Error occured when fetching lists</div>;
   }
 
-  if (fetchingLists || !listsGroupedByDate) {
+  if (fetchingLists) {
     return <div>Loading lists</div>;
   }
 

@@ -119,9 +119,11 @@ function NavBar() {
         <NavLinkOption to={'/statistics'}>
           <ChartBarSquareIcon className="h-6 w-6 text-neutral-dark" />
         </NavLinkOption>
-        <NavButtonOption onClick={showCurrentList}>
-          <ClipboardDocumentListIcon className="h-6 w-6 text-neutral-dark" />
-        </NavButtonOption>
+        {!!currentListId && (
+          <NavButtonOption onClick={showCurrentList}>
+            <ClipboardDocumentListIcon className="h-6 w-6 text-neutral-dark" />
+          </NavButtonOption>
+        )}
         {user ? (
           <NavButtonOption onClick={logout}>
             <ArrowLeftOnRectangleIcon className="h-6 w-6 text-neutral-dark" />
