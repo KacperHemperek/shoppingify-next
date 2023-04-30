@@ -1,16 +1,21 @@
 import useSidebar from '@/hooks/useSidebar';
 
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { addItem } from '@/redux/slices/newListSlice';
+import { itemAlreadyOnLIst } from '@/redux/slices/newListSlice';
+import { removeItem } from '@/redux/slices/newListSlice';
 
 import { api } from '@/utils/api';
 
 import { BackButton } from './BackButton';
 
 function ItemInfo() {
-  const dispatch = useAppDispatch();
-
   const { item, setSidebarOption } = useSidebar();
+
+  const dispatch = useAppDispatch();
+  const itemOnList = useAppSelector((state) =>
+    itemAlreadyOnLIst(state, item?.id ?? -1, item?.category ?? '')
+  );
   const utils = api.useContext();
 
   const { mutate: deleteItemMutation } = api.item.delete.useMutation({
@@ -30,16 +35,19 @@ function ItemInfo() {
     deleteItemMutation({ itemId, categoryName });
   }
 
-  function addToList() {
+  function toggleItemOnList() {
     if (item) {
-      dispatch(
-        addItem({
-          categoryName: item.category,
-          itemId: item.id,
-          itemName: item.name,
-        })
-      );
-
+      if (!itemOnList) {
+        dispatch(
+          addItem({
+            categoryName: item.category,
+            itemId: item.id,
+            itemName: item.name,
+          })
+        );
+      } else {
+        dispatch(removeItem({ itemId: item.id, categoryName: item.category }));
+      }
       setSidebarOption('cart');
     }
   }
@@ -90,10 +98,10 @@ function ItemInfo() {
         </button>
         <button
           type="submit"
-          onClick={addToList}
+          onClick={toggleItemOnList}
           className="submit-button px-6 py-4"
         >
-          Add to list
+          {itemOnList ? 'Remove' : 'Add to list'}
         </button>
       </div>
     </div>
