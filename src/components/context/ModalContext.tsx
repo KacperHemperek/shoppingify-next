@@ -1,4 +1,9 @@
-import { PropsWithChildren, ReactNode, createContext, useState } from 'react';
+import {
+  type PropsWithChildren,
+  type ReactNode,
+  createContext,
+  useState,
+} from 'react';
 
 import { useModal } from '@/hooks/useModal';
 

@@ -1,5 +1,5 @@
 import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-import { ListState } from '@prisma/client';
+import { type ListState } from '@prisma/client';
 import { memo, useMemo } from 'react';
 
 import useSidebar from '@/hooks/useSidebar';
@@ -91,7 +91,7 @@ function History() {
       [date in string]: SingleItemProps[];
     } = {};
 
-    for (let list of lists) {
+    for (const list of lists) {
       console.log(list.createdAt.toDateString());
       const formatedDate = Intl.DateTimeFormat('en-US', {
         year: 'numeric',

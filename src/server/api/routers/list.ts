@@ -1,12 +1,8 @@
-import { ListState } from '@prisma/client';
+import { type ListState } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import {
-  createTRPCRouter,
-  userProcedure,
-  userProtectedProcedure,
-} from '@/server/api/trpc';
+import { createTRPCRouter, userProtectedProcedure } from '@/server/api/trpc';
 
 const itemSchema = z.object({
   amount: z.number().min(1),
