@@ -142,41 +142,44 @@ function List({
   );
 }
 
-export default function ListView({ listId }: { listId: number }) {
+export default function ListView({ listId }: { listId?: number }) {
   const {
     data: listData,
     isLoading: fetchingList,
     error: fetchingListError,
-  } = api.list.getListById.useQuery({ listId });
+  } = api.list.getListById.useQuery(
+    { listId: listId ?? -1 },
+    { enabled: !!listId }
+  );
 
   const { setSidebarOption } = useSidebar();
 
   if (fetchingListError) {
     return (
-      <div className="flex h-full flex-col justify-between  bg-primary-light">
+      <motion.div className="flex h-full flex-col justify-between  bg-primary-light">
         There was a problem getting that list
-      </div>
+      </motion.div>
     );
   }
 
   if (fetchingList) {
     return (
-      <div className="flex h-full flex-col justify-between  bg-primary-light">
+      <motion.div className="flex h-full flex-col justify-between  bg-primary-light">
         Loading list ...
-      </div>
+      </motion.div>
     );
   }
 
   if (!listData) {
     return (
-      <div className="flex h-full flex-col justify-between  bg-primary-light ">
+      <motion.div className="flex h-full flex-col justify-between  bg-primary-light ">
         List not found
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="p flex h-full flex-col  justify-between bg-primary-light">
+    <motion.div className="p flex h-full flex-col  justify-between bg-primary-light">
       <div className="flex flex-col overflow-y-scroll px-4 py-8 xl:px-12">
         <div className="block md:hidden">
           <BackButton
@@ -198,6 +201,6 @@ export default function ListView({ listId }: { listId: number }) {
 
         <List items={listData.items} listState={listData.state} />
       </div>
-    </div>
+    </motion.div>
   );
 }

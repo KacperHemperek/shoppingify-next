@@ -93,43 +93,124 @@ const CartItem = forwardRef(
 
 CartItem.displayName = 'CartItem';
 
-function ConfirmSaveListAsCurrentModal() {
-  return <div>Hello confirm modal</div>;
+function useCreateNewList({
+  onSuccessCallback,
+}: {
+  onSuccessCallback: () => void;
+}) {
+  const items = useAppSelector(getAllItems);
+  const apiUtils = api.useContext();
+
+  const { mutate } = api.list.create.useMutation({
+    onError: (e) => {
+      toast.error(formatErrorMessage(e) ?? 'Sorry something went wrong!');
+    },
+    onSuccess: () => {
+      toast.success('List created successfully');
+      apiUtils.list.getAll.invalidate();
+
+      onSuccessCallback();
+    },
+  });
+
+  function createList({ listName }: { listName: string }) {
+    mutate({
+      items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
+      listName,
+    });
+  }
+
+  return { createList, items };
+}
+
+function ConfirmSaveListAsCurrentModal({
+  currentListName,
+  newListName,
+  resetListNameInput,
+}: {
+  currentListName: string;
+  newListName: string;
+  resetListNameInput: () => void;
+}) {
+  const { closeModal } = useModal();
+
+  const { createList } = useCreateNewList({
+    onSuccessCallback: () => {
+      resetListNameInput();
+      closeModal();
+    },
+  });
+
+  const onCreateList = () => {
+    createList({ listName: newListName });
+  };
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex justify-between mb-4 items-start">
+        <h3 className="text-xl font-medium ">Changing current list</h3>
+        <button className="" onClick={closeModal}>
+          <XMarkIcon className="w-4 h-4" />
+        </button>
+      </div>
+      <p className="mb-6">
+        List <span className="text-primary font-medium">{currentListName}</span>{' '}
+        is now your current list, do you want to{' '}
+        <span className="text-danger font-medium">cancel</span> that list and
+        make <span className="text-primary font-medium"> {newListName}</span>{' '}
+        your current list
+      </p>
+
+      <div className="self-end space-x-6">
+        <button
+          className="bg-danger rounded-lg py-2 px-4 text-white font-medium"
+          onClick={closeModal}
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-primary rounded-lg py-2 px-4 text-white font-medium"
+          onClick={onCreateList}
+        >
+          Ok
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default function Cart() {
   const categories = useAppSelector(getCategories);
-  const items = useAppSelector(getAllItems);
   const dispatch = useAppDispatch();
   const { setSidebarOption } = useSidebar();
   const { openModal } = useModal();
+  const { createList, items } = useCreateNewList({
+    onSuccessCallback: () => setListname(''),
+  });
 
   const [listname, setListname] = useState('');
 
   const { data: currentListId } = api.list.getCurrentListId.useQuery();
 
-  const apiUtils = api.useContext();
-
-  const { mutate: createList } = api.list.create.useMutation({
-    onError: (e) => {
-      toast.error(formatErrorMessage(e) ?? 'Sorry something went wrong!');
-      setListname('');
-    },
-    onSuccess: () => {
-      toast.success('List created successfully');
-      apiUtils.list.getAll.invalidate();
-    },
-  });
+  const { data: currentList } = api.list.getListById.useQuery(
+    { listId: currentListId ?? -1 },
+    { enabled: !!currentListId }
+  );
 
   async function saveList(e: React.FormEvent) {
     e.preventDefault();
 
     if (currentListId) {
-      openModal(<ConfirmSaveListAsCurrentModal />);
+      openModal(
+        <ConfirmSaveListAsCurrentModal
+          currentListName={currentList?.name ?? ''}
+          newListName={listname}
+          resetListNameInput={() => setListname('')}
+        />
+      );
     } else {
       createList({
         listName: listname,
-        items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
       });
     }
   }

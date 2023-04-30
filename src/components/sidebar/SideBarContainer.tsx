@@ -39,11 +39,11 @@ function DesktopSideBar() {
           className="h-screen bg-neutral-extralight md:relative "
         >
           {sidebarOption === 'addItem' && <AddItemForm key="addItem" />}
-          {sidebarOption === 'cart' && <Cart />}
+          {sidebarOption === 'cart' && <Cart key="cart" />}
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />
           )}
-          {sidebarOption === 'list' && currentListId && (
+          {sidebarOption === 'list' && (
             <ListView listId={currentListId} key={'list'} />
           )}
         </motion.div>
@@ -77,7 +77,7 @@ function MobileSideBar() {
           {sidebarOption === 'itemInfo' && item && (
             <ItemInfo key={'itemInfo'} />
           )}
-          {sidebarOption === 'list' && currentListId && (
+          {sidebarOption === 'list' && (
             <ListView listId={currentListId} key={'list'} />
           )}
         </motion.div>

@@ -80,6 +80,11 @@ export const listRouter = createTRPCRouter({
           itemId: item.itemId,
         }));
 
+        await ctx.prisma.list.updateMany({
+          where: { userId: ctx.user.id, state: 'current' },
+          data: { state: 'cancelled' },
+        });
+
         const newList = await ctx.prisma.list.create({
           data: {
             name: input.listName,

@@ -15,7 +15,10 @@ function Modal({ children }: PropsWithChildren) {
       onClick={closeModal}
       className="fixed bg-neutral-dark/20 w-screen h-screen z-50 flex backdrop-blur-[2px] p-6 items-center justify-center"
     >
-      <div className="max-w-sm bg-neutral-extralight rounded-xl p-6">
+      <div
+        className="max-w-md bg-neutral-extralight rounded-xl p-6 w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
         {children}
       </div>
     </div>
