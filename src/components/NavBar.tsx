@@ -84,7 +84,7 @@ function NavBar() {
     data: currentListId,
     isLoading: fetchingCurrentlist,
     isError,
-  } = api.list.getCurrentListId.useQuery(undefined, {});
+  } = api.list.getCurrentListId.useQuery();
 
   const { setSidebarOption, setShownListId: setCurrentListId } = useSidebar();
 
