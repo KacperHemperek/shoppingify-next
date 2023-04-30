@@ -21,6 +21,44 @@ function ListItem({
   disabled: boolean;
 }) {
   const controls = useAnimationControls();
+  const { currentListId } = useSidebar();
+
+  const apiUtils = api.useContext();
+
+  const { mutate: toggleItem } = api.list.toggleListItem.useMutation({
+    onMutate: ({ itemId, value }) => {
+      if (!currentListId) return;
+      apiUtils.list.getListById.cancel();
+
+      const currentListData = apiUtils.list.getListById.getData({
+        listId: currentListId,
+      });
+      if (!currentListData) return;
+      const updatedItems = currentListData.items.map((item) =>
+        item.id === itemId ? { ...item, checked: value } : item
+      );
+      const updatedListData = { ...currentListData, items: updatedItems };
+
+      apiUtils.list.getListById.setData(
+        { listId: currentListId },
+        updatedListData
+      );
+
+      return { previusListData: currentListData };
+    },
+    onError: (_err, _input, context) => {
+      if (!currentListId) return;
+
+      apiUtils.list.getListById.setData(
+        { listId: currentListId },
+        context?.previusListData
+      );
+    },
+    onSettled: () => {
+      currentListId &&
+        apiUtils.list.getListById.invalidate({ listId: currentListId });
+    },
+  });
 
   function onItemClicked() {
     if (disabled) {
@@ -46,7 +84,14 @@ function ListItem({
           'flex gap-2 font-medium'
         )}
       >
-        <Checkbox checked={item.checked} disabled={disabled} />
+        <Checkbox
+          checked={item.checked}
+          disabled={disabled}
+          onCheck={(value: boolean) => {
+            toggleItem({ itemId: item.id, value });
+          }}
+          newValue={!item.checked}
+        />
         {item.name}
       </div>
       <ItemAmount amount={item.amount} />

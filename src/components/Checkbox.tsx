@@ -6,13 +6,13 @@ export default function Checkbox({
   checked,
   newValue,
   wrapperClassName,
-  setChecked,
+  onCheck: setChecked,
   disabled = false,
 }: {
   checked: boolean;
   wrapperClassName?: string;
   newValue?: boolean;
-  setChecked?: (value: boolean) => void;
+  onCheck?: (value: boolean) => void;
   disabled?: boolean;
 }) {
   return (
@@ -23,7 +23,7 @@ export default function Checkbox({
         className="hide-visually"
         onChange={(e) => {
           e.stopPropagation();
-          !disabled && setChecked && setChecked(!!newValue);
+          !disabled && setChecked && setChecked(newValue ?? e.target.checked);
         }}
         disabled={disabled}
       />
@@ -47,7 +47,7 @@ export default function Checkbox({
           d="M 7 22
              l 7 8
              20-19"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </label>

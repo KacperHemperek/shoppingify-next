@@ -48,7 +48,7 @@ function formatListToContainItemsWithData(list: NotFormatedListWithItems): {
   const formatedItems: FormatedItem[] = list.items.map((item) => ({
     name: item.item.name,
     amount: item.amount,
-    id: item.item.id,
+    id: item.id,
     category: item.item.category.name,
     checked: item.checked,
   }));
@@ -198,4 +198,25 @@ export const listRouter = createTRPCRouter({
       });
     }
   }),
+  toggleListItem: userProtectedProcedure
+    .input(
+      z.object({
+        itemId: z.number().min(1, "It's not a valid id"),
+        value: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.prisma.listItem.update({
+          where: { id: input.itemId },
+          data: { checked: input.value },
+        });
+      } catch (e) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unexpected error when toggling item occured',
+          cause: e,
+        });
+      }
+    }),
 });
