@@ -2,6 +2,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
 
 import CategoriesList from '@/components/CategoriesList';
+import ErrorPage from '@/components/layounts/ErrorPage';
 import Loadingpage from '@/components/layounts/LoadingPage';
 
 import type { CategoryType } from '@/types/Categoy.interface';
@@ -40,7 +41,7 @@ function Homepage() {
   );
 
   if (error) {
-    return <div>Error occured</div>;
+    return <ErrorPage />;
   }
 
   if (isLoading) {

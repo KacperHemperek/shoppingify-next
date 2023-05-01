@@ -12,8 +12,5 @@ module.exports = {
     '^@/styles/(.*)$',
     '^[./]',
   ],
-  plugins: [
-    require.resolve('prettier-plugin-tailwindcss'),
-    require('@trivago/prettier-plugin-sort-imports'),
-  ],
+  plugins: [require.resolve('prettier-plugin-tailwindcss')],
 };

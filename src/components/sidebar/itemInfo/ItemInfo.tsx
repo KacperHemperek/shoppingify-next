@@ -7,7 +7,7 @@ import { removeItem } from '@/redux/slices/newListSlice';
 
 import { api } from '@/utils/api';
 
-import { BackButton } from './BackButton';
+import { BackButton } from '../BackButton';
 
 function ItemInfo() {
   const { item, setSidebarOption } = useSidebar();

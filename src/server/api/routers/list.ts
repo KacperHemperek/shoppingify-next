@@ -187,4 +187,25 @@ export const listRouter = createTRPCRouter({
         });
       }
     }),
+  updateListName: userProtectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(1, 'List name is too short'),
+        listId: z.number().min(1, 'Not a valid id'),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.prisma.list.update({
+          where: { id: input.listId },
+          data: { name: input.name },
+        });
+      } catch (e) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'There was a problem updating your list name',
+          cause: e,
+        });
+      }
+    }),
 });
