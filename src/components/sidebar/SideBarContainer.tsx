@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 
 import useSidebar from '@/hooks/useSidebar';
 
-import AddItemForm from './AddItemForm';
-import Cart from './Cart';
-import ItemInfo from './ItemInfo';
-import ListView from './List';
+import AddItemForm from './addItem/AddItemForm';
+import Cart from './cart/Cart';
+import ItemInfo from './itemInfo/ItemInfo';
+import ListView from './list/List';
 
 const x = '100%';
 

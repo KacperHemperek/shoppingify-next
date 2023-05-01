@@ -8,12 +8,12 @@ import { formatErrorMessage } from '@/lib/trpcErrorFormater';
 
 import { api } from '@/utils/api';
 
-import DropDown from '../DropDown';
+import DropDown from '../../DropDown';
 
 export type AddItemType = {
-  name: string;
-  desc: string;
-  category: string;
+  name?: string;
+  desc?: string;
+  category?: string;
 };
 
 function AddItemForm() {
@@ -43,12 +43,12 @@ function AddItemForm() {
 
   const addNewItem = async (data: AddItemType) => {
     const categoryId = dropdownOptions?.find(
-      (option) => option.name.toLowerCase() === data.category.toLowerCase()
+      (option) => option?.name?.toLowerCase() === data?.category?.toLowerCase()
     )?.id;
     createItemMutation({
-      categoryName: data.category.trim(),
-      desc: data.desc.trim(),
-      name: data.name.trim(),
+      categoryName: data.category?.trim() ?? '',
+      desc: data.desc?.trim() ?? '',
+      name: data.name?.trim() ?? '',
       categoryId,
     });
   };
@@ -97,7 +97,7 @@ function AddItemForm() {
             options={dropdownOptions ?? []}
             setValue={setValue}
             inputName="category"
-            value={watchCategory}
+            value={watchCategory ?? ''}
             disabled={creatingItem}
             register={register('category')}
           />

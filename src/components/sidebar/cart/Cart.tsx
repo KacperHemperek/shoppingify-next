@@ -7,21 +7,14 @@ import {
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
-import { forwardRef } from 'react';
-import { toast } from 'react-hot-toast';
 
+import useCreateNewList from '@/hooks/useCreateNewList';
 import { useModal } from '@/hooks/useModal';
 import useSidebar from '@/hooks/useSidebar';
 
-import { formatErrorMessage } from '@/lib/trpcErrorFormater';
-
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  changeItemAmount,
   getCategories,
-  removeItem,
-  type NewListItem,
-  getAllItems,
   clearList,
   getListname,
   setListname as setListnameRedux,
@@ -29,161 +22,8 @@ import {
 
 import { api } from '@/utils/api';
 
-import { ItemAmount } from './ItemAmount';
-
-const CartItem = forwardRef(
-  ({ amount, category, id, name }: NewListItem, _ref) => {
-    const dispatch = useAppDispatch();
-
-    function handleIncrementAmount() {
-      dispatch(
-        changeItemAmount({
-          categoryName: category,
-          itemId: id,
-          type: 'increment',
-        })
-      );
-    }
-
-    function removeItemFromList() {
-      dispatch(removeItem({ categoryName: category, itemId: id }));
-    }
-
-    function handleDecrementAmount() {
-      dispatch(
-        changeItemAmount({
-          categoryName: category,
-          itemId: id,
-          type: 'decrement',
-        })
-      );
-    }
-
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: -10, opacity: 0 }}
-        className="group flex h-full items-center
-        justify-between"
-      >
-        <h4 className="truncate text-lg font-medium">{name}</h4>{' '}
-        <div className="flex items-center gap-2 rounded-lg py-1 pr-2 text-primary group-hover:bg-white group-hover:py-0 md:py-2 md:pr-2">
-          <button
-            onClick={removeItemFromList}
-            className="hidden rounded-lg bg-primary px-1 py-2 group-hover:block md:px-2 md:py-3 "
-          >
-            <TrashIcon className="h-6 w-6 text-white" />
-          </button>{' '}
-          <button
-            onClick={handleDecrementAmount}
-            className="hidden transition-all group-hover:block"
-          >
-            <MinusIcon className="h-6 w-6 " />
-          </button>{' '}
-          <ItemAmount amount={amount} />
-          <button
-            onClick={handleIncrementAmount}
-            className="hidden transition-all group-hover:block"
-          >
-            <PlusIcon className="h-6 w-6 " />
-          </button>{' '}
-        </div>
-      </motion.div>
-    );
-  }
-);
-
-CartItem.displayName = 'CartItem';
-
-function useCreateNewList({
-  onSuccessCallback,
-}: {
-  onSuccessCallback: () => void;
-}) {
-  const items = useAppSelector(getAllItems);
-  const dispatch = useAppDispatch();
-  const apiUtils = api.useContext();
-
-  const { mutate } = api.list.create.useMutation({
-    onError: (e) => {
-      toast.error(formatErrorMessage(e) ?? 'Sorry something went wrong!');
-    },
-    onSuccess: () => {
-      toast.success('List created successfully');
-      apiUtils.list.getAll.invalidate();
-      apiUtils.list.getCurrentListId.invalidate();
-
-      onSuccessCallback();
-      dispatch(clearList());
-    },
-  });
-
-  function createList({ listName }: { listName: string }) {
-    mutate({
-      items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
-      listName,
-    });
-  }
-
-  return { createList, items };
-}
-
-function ConfirmSaveListAsCurrentModal({
-  currentListName,
-  newListName,
-  resetListNameInput,
-}: {
-  currentListName: string;
-  newListName: string;
-  resetListNameInput: () => void;
-}) {
-  const { closeModal } = useModal();
-
-  const { createList } = useCreateNewList({
-    onSuccessCallback: () => {
-      resetListNameInput();
-      closeModal();
-    },
-  });
-
-  const onCreateList = () => {
-    createList({ listName: newListName });
-  };
-
-  return (
-    <div className="flex flex-col">
-      <div className="flex justify-between mb-4 items-start">
-        <h3 className="text-xl font-medium ">Changing current list</h3>
-        <button className="" onClick={closeModal}>
-          <XMarkIcon className="w-4 h-4" />
-        </button>
-      </div>
-      <p className="mb-6">
-        List <span className="text-primary font-medium">{currentListName}</span>{' '}
-        is now your current list, do you want to{' '}
-        <span className="text-danger font-medium">cancel</span> that list and
-        make <span className="text-primary font-medium"> {newListName}</span>{' '}
-        your current list
-      </p>
-
-      <div className="self-end space-x-6">
-        <button
-          className="bg-danger rounded-lg py-2 px-4 text-white font-medium"
-          onClick={closeModal}
-        >
-          Cancel
-        </button>
-        <button
-          className="bg-primary rounded-lg py-2 px-4 text-white font-medium"
-          onClick={onCreateList}
-        >
-          Ok
-        </button>
-      </div>
-    </div>
-  );
-}
+import CartItem from './CartItem';
+import ConfirmSaveListAsCurrentModal from './ConfirmSaveListAsCurrentModal';
 
 export default function Cart() {
   const categories = useAppSelector(getCategories);
