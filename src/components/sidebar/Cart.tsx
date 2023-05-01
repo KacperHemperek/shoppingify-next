@@ -7,7 +7,7 @@ import {
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { useModal } from '@/hooks/useModal';
@@ -23,6 +23,8 @@ import {
   type NewListItem,
   getAllItems,
   clearList,
+  getListname,
+  setListname as setListnameRedux,
 } from '@/redux/slices/newListSlice';
 
 import { api } from '@/utils/api';
@@ -188,12 +190,11 @@ export default function Cart() {
   const dispatch = useAppDispatch();
   const { setSidebarOption } = useSidebar();
   const { openModal } = useModal();
+  const listname = useAppSelector(getListname);
 
   const { createList, items } = useCreateNewList({
     onSuccessCallback: () => setListname(''),
   });
-
-  const [listname, setListname] = useState('');
 
   const { data: currentListId } = api.list.getCurrentListId.useQuery();
 
@@ -202,7 +203,11 @@ export default function Cart() {
     { enabled: !!currentListId }
   );
 
-  const saveListDisabled = !listname.trim().length || !items.length;
+  const saveListDisabled = !listname?.trim()?.length || !items?.length;
+
+  function setListname(value: string) {
+    dispatch(setListnameRedux(value));
+  }
 
   async function saveList(e: React.FormEvent) {
     e.preventDefault();

@@ -185,7 +185,7 @@ export default function ListView({ listId }: { listId?: number }) {
 
   if (!listData) {
     return (
-      <motion.div className="flex h-full flex-col justify-between  bg-primary-light ">
+      <motion.div className="flex h-full flex-col justify-between  bg-primary-light">
         List not found
       </motion.div>
     );

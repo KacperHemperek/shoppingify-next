@@ -10,14 +10,14 @@ export type NewListItem = {
   category: string;
 };
 
-// Define a type for the slice state
 type NewListState = {
   categories: { [key: string]: NewListItem[] };
+  listName: string;
 };
 
-// Define the initial state using that type
 const initialState: NewListState = {
   categories: {},
+  listName: '',
 };
 
 export const newListSlice = createSlice({
@@ -117,10 +117,13 @@ export const newListSlice = createSlice({
         }
       }
     },
+    setListname: (state, action: PayloadAction<string>) => {
+      state.listName = action.payload;
+    },
   },
 });
 
-export const { addItem, removeItem, changeItemAmount, clearList } =
+export const { addItem, removeItem, changeItemAmount, clearList, setListname } =
   newListSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
@@ -151,5 +154,7 @@ export const getAllItems = (state: RootState) =>
   Object.entries(state.newList.categories)
     .map(([_categoryName, items]) => items)
     .reduce((prev, current) => [...prev, ...current], []);
+
+export const getListname = (state: RootState) => state.newList.listName;
 
 export default newListSlice.reducer;
