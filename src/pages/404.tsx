@@ -8,8 +8,8 @@ export default function NotFound() {
         <div className="flex flex-col max-w-sm">
           <h1 className="text-4xl font-bold mb-6 md:text-6xl">Not Found</h1>
           <p className="md:text-lg mb-6">
-            Seems like this page does not exist, if you think it's not right and
-            want to help{' '}
+            Seems like this page does not exist, if you think it&lsquo;s not
+            right and want to help{' '}
             <a
               className="underline font-bold text-primary"
               href="https://github.com/KacperHemperek/shoppingify-next/issues"

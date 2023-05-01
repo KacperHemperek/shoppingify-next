@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 
 import { useAppDispatch } from '@/redux/hooks';
 import {
-  NewListItem,
+  type NewListItem,
   changeItemAmount,
   removeItem,
 } from '@/redux/slices/newListSlice';

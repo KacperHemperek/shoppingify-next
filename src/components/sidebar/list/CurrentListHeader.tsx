@@ -5,12 +5,12 @@ import {
 } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { motion, useAnimationControls } from 'framer-motion';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { formatErrorMessage } from '@/lib/trpcErrorFormater';
 
-import { RouterOutputs, api } from '@/utils/api';
+import { type RouterOutputs, api } from '@/utils/api';
 
 export default function CurrentListHeader({
   listData,
