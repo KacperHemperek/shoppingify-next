@@ -28,7 +28,10 @@ export default function Cart() {
   const listname = useAppSelector(getListname);
 
   const { createList, items } = useCreateNewList({
-    onSuccessCallback: () => setListname(''),
+    onSuccessCallback: () => {
+      setSidebarOption('list');
+      setListname('');
+    },
   });
 
   const { data: currentListId } = api.list.getCurrentListId.useQuery();
@@ -158,6 +161,7 @@ export default function Cart() {
               }}
             />
             <button
+              type="submit"
               disabled={saveListDisabled}
               className="rounded-l-lg bg-primary p-4 font-semibold text-white disabled:bg-neutral-light"
             >

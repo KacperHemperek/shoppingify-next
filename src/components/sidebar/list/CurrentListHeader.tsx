@@ -28,7 +28,6 @@ export default function CurrentListHeader({
 
   const { mutate: updateListName } = api.list.updateListName.useMutation({
     onMutate: ({ listId, name }) => {
-      debugger;
       apiUtils.list.getListById.cancel();
       apiUtils.list.getAll.cancel();
 
