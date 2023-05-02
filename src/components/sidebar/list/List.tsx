@@ -20,6 +20,7 @@ import { type FormatedItem } from '@/server/api/routers/list';
 import Checkbox from '../../Checkbox';
 import { BackButton } from '../BackButton';
 import { ItemAmount } from '../ItemAmount';
+import CurrentListActionButtons from './CurrentListActionButtons';
 import CurrentListHeader from './CurrentListHeader';
 
 function ListItem({
@@ -107,6 +108,7 @@ function ListItem({
               disabled ? 'bg-neutral-light' : 'bg-neutral-dark',
               'h-[1px] absolute self-start top-[55%] -translate-y-1/2'
             )}
+            initial={false}
             animate={{
               width: item.checked ? '100%' : '0%',
               transition: { duration: 0.2, ease: 'easeInOut' },
@@ -183,7 +185,6 @@ export default function ListView({ listId }: { listId?: number }) {
 
   const { mutate: updateListName } = api.list.updateListName.useMutation({
     onMutate: ({ listId, name }) => {
-      debugger;
       apiUtils.list.getListById.cancel();
       apiUtils.list.getAll.cancel();
 
@@ -280,8 +281,8 @@ export default function ListView({ listId }: { listId?: number }) {
   }
 
   return (
-    <motion.div className="p flex h-full flex-col  justify-between bg-primary-light">
-      <div className="flex flex-col overflow-y-scroll px-4 py-8 xl:px-12">
+    <motion.div className="p flex h-full flex-col justify-between bg-primary-light">
+      <div className="flex flex-col overflow-y-auto px-4 py-8 xl:px-12">
         <div className="block md:hidden">
           <BackButton
             onClick={() => {
@@ -301,6 +302,8 @@ export default function ListView({ listId }: { listId?: number }) {
 
         <List items={listData.items} listState={listData.state} />
       </div>
+
+      {listData.state === 'current' && <CurrentListActionButtons />}
     </motion.div>
   );
 }

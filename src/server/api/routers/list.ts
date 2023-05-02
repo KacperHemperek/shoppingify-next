@@ -1,4 +1,4 @@
-import { type ListState } from '@prisma/client';
+import { ListState } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -204,6 +204,34 @@ export const listRouter = createTRPCRouter({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'There was a problem updating your list name',
+          cause: e,
+        });
+      }
+    }),
+  changeStatus: userProtectedProcedure
+    .input(z.object({ status: z.enum(['cancelled', 'current', 'completed']) }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const listWithId = await ctx.prisma.list.findFirst({
+          where: { userId: ctx.user.id, state: 'current' },
+          select: { id: true },
+        });
+
+        if (!listWithId || !listWithId.id) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: "User doesn't have current list",
+          });
+        }
+
+        await ctx.prisma.list.update({
+          where: { id: listWithId.id },
+          data: { state: input.status },
+        });
+      } catch (e) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unnexprected Error occured while updating list',
           cause: e,
         });
       }
