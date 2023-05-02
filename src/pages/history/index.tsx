@@ -147,7 +147,7 @@ function History() {
         )}
         {!!listsGroupedByDate &&
           listsGroupedByDate.map(([date, lists]) => (
-            <article className="mt-12 flex flex-col" key={date}>
+            <article className="my-10 flex flex-col" key={date}>
               <h5 className="mb-4 text-xs font-medium">{date}</h5>
               <div className="w-full space-y-6">
                 {lists.map((list) => (
