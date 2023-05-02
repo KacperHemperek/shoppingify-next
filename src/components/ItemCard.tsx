@@ -92,9 +92,9 @@ const ItemCard = React.forwardRef(
         }}
         exit={{ opacity: 0, y: -10 }}
         layout={'position'}
-        className="flex h-min items-center justify-between space-x-4 rounded-xl bg-white p-5 shadow-md  hover:cursor-pointer"
+        className="flex h-min items-center justify-between space-x-4 rounded-xl bg-white p-3 lg:p-5 shadow-md  hover:cursor-pointer"
       >
-        <span className="font-medium">{item.name}</span>
+        <span className="font-medium truncate">{item.name}</span>
         {!isInNewList && (
           <ItemCardButton
             hover={hover}
