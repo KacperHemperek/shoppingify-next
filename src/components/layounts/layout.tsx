@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
-import type { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 
 import NavBar from '@/components/NavBar';
 import Loadingpage from '@/components/layounts/LoadingPage';
 import SideBar from '@/components/sidebar/SideBarContainer';
 
+import useSidebar from '@/hooks/useSidebar';
 import { useUser } from '@/hooks/useUser';
 
 import NotLoggedIn from './NotLoggedIn';
@@ -12,6 +13,12 @@ import NotLoggedIn from './NotLoggedIn';
 function RouteGuard({ children }: PropsWithChildren) {
   const router = useRouter();
   const { user, loading } = useUser();
+  const { setSidebarOption } = useSidebar();
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
+      setSidebarOption(undefined);
+    }
+  }, [router.pathname]);
 
   // input all your restricted routes
   const restrictedRoutes: string[] = ['/', '/history', '/statistics'];
