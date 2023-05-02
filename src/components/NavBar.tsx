@@ -50,7 +50,7 @@ function NavLinkOption({
       {router.pathname === to ? (
         <>
           <motion.div
-            className="h-full w-2 rounded-r-lg bg-primary"
+            className="h-full w-1 md:w-2 rounded-r-lg bg-primary"
             layoutId={'nav-active'}
           />
           <div className="flex h-full w-full items-center justify-center">
@@ -103,7 +103,7 @@ function NavBar() {
     <nav className="flex flex-col justify-between bg-white">
       <Link
         href="/"
-        className="relative flex items-center justify-center m-3 md:m-6"
+        className="relative flex items-center justify-center m-2 md:m-6"
       >
         <Image
           src={'/assets/logo.svg'}
@@ -137,18 +137,18 @@ function NavBar() {
           </NavLinkOption>
         )}
       </div>
-      <div className="flex flex-col p-3 lg:p-6">
+      <div className="flex flex-col p-2 lg:p-6">
         <button
           className="mb-6 rounded-full bg-success p-3"
           onClick={() => setSidebarOption('addItem')}
         >
-          <PlusIcon className="h-6 w-6 text-white" />
+          <PlusIcon className="h-4 w-4 md:h-6 md:w-6 text-white" />
         </button>
         <button
           className="rounded-full bg-primary p-3"
           onClick={() => setSidebarOption('cart')}
         >
-          <ShoppingCartIcon className="h-6 w-6 text-white" />
+          <ShoppingCartIcon className="h-4 w-4 md:h-6 md:w-6 text-white" />
         </button>
       </div>
     </nav>
