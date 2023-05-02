@@ -4,8 +4,8 @@ import Link from 'next/link';
 export default function NotFound() {
   return (
     <div className="flex h-screen w-full items-center justify-center">
-      <div className="space-y-6 flex flex-col xl:flex-row xl:gap-8 items-center">
-        <div className="flex flex-col max-w-sm">
+      <div className="space-y-6 flex flex-col xl:flex-row xl:gap-8 justify-center items-center">
+        <div className="flex flex-col max-w-[220px] md:max-w-sm">
           <h1 className="text-4xl font-bold mb-6 md:text-6xl">Not Found</h1>
           <p className="md:text-lg mb-6">
             Seems like this page does not exist, if you think it&lsquo;s not
@@ -26,7 +26,7 @@ export default function NotFound() {
             Go to homepage
           </Link>
         </div>
-        <div className="relative h-80 w-80 p-8 md:p-0">
+        <div className="relative w-56 h-56 md:h-80 md:w-80 max-w-full p-8 md:p-0">
           <Image
             src="/assets/undraw_page_not_found_re_e9o6.svg"
             alt="not logged in hero image"
