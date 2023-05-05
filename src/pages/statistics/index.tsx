@@ -44,8 +44,6 @@ export default function Statistics() {
     return <div>something went wrong</div>;
   }
 
-  console.log(topThreeItems);
-
   return (
     <div className="flex w-full flex-col px-3 py-8 md:px-6 xl:px-20">
       <div className="grid lg:grid-cols-2 gap-12">
