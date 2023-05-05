@@ -29,7 +29,6 @@ export default function Cart() {
 
   const { createList, items } = useCreateNewList({
     onSuccessCallback: () => {
-      setSidebarOption('list');
       setListname('');
     },
   });
