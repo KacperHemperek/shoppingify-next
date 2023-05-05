@@ -7,7 +7,7 @@ export const chartsRouter = createTRPCRouter({
     try {
       const topThreeItemsWithTotalAmount = await ctx.prisma.listItem.groupBy({
         by: ['itemId'],
-        _count: { amount: true },
+        _sum: { amount: true },
         orderBy: { _count: { amount: 'desc' } },
         take: 3,
       });
@@ -32,7 +32,7 @@ export const chartsRouter = createTRPCRouter({
             return {
               name: itemWithName.name,
               id: itemWithName.id,
-              amount: itemWithTotalAmount?._count.amount ?? 0,
+              amount: itemWithTotalAmount?._sum.amount ?? 0,
               allItemsAmount: allUsersItems._sum.amount ?? 0,
             };
           })
