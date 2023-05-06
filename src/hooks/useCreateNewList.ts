@@ -32,7 +32,11 @@ function useCreateNewList({
 
   function createList({ listName }: { listName: string }) {
     mutate({
-      items: items.map((item) => ({ amount: item.amount, itemId: item.id })),
+      items: items.map((item) => ({
+        amount: item.amount,
+        itemId: item.id,
+        categoryId: item.categoryId,
+      })),
       listName,
     });
   }

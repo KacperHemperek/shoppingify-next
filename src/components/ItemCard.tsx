@@ -71,6 +71,7 @@ const ItemCard = React.forwardRef(
           categoryName: item.category,
           itemName: item.name,
           itemId: item.id,
+          categoryId: categoryId,
         })
       );
     };
