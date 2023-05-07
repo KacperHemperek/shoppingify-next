@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 import {
   LineChart,
@@ -10,6 +12,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+
+import ErrorPage from '@/components/layouts/ErrorPage';
+import Loadingpage from '@/components/layouts/LoadingPage';
+
+import useSidebar from '@/hooks/useSidebar';
 
 import { RouterOutputs, api } from '@/utils/api';
 
@@ -50,23 +57,15 @@ function BarChartRow({
 function LineChartWithItemsPerMonth({
   data,
 }: {
-  data?: RouterOutputs['charts']['getLineChartData'];
+  data: RouterOutputs['charts']['getLineChartData'];
 }) {
-  if (!data) {
-    return (
-      <div className="flex w-full h-full py-8">
-        <h4>Not enough data for current user</h4>
-      </div>
-    );
-  }
-
   const maxValue = Math.max(...(data?.map(({ items }) => items) ?? [])) + 10;
   const minValue = Math.min(...(data?.map(({ items }) => items) ?? [])) - 10;
 
   return (
-    <div className="flex w-full h-full py-8">
+    <div className="flex w-full h-80 md:h-[450px] py-8">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <LineChart data={data} margin={{ right: 46 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis domain={[minValue <= 0 ? 0 : minValue, maxValue]} />
@@ -86,16 +85,47 @@ function LineChartWithItemsPerMonth({
 }
 
 export default function Statistics() {
-  const { data: topThreeItems } = api.charts.getTopThreeItems.useQuery();
-  const { data: topThreeCategories } =
-    api.charts.getTopThreeCategories.useQuery();
+  const router = useRouter();
+  const { setSidebarOption } = useSidebar();
 
-  const { data: lineChartData } = api.charts.getLineChartData.useQuery();
+  const {
+    data: topThreeItems,
+    isLoading: topItemsLoading,
+    isError: fetchingTopItemsFailed,
+  } = api.charts.getTopThreeItems.useQuery();
+  const {
+    data: topThreeCategories,
+    isLoading: topCategoriesLoading,
+    isError: fetchingTopCategoriesFailed,
+  } = api.charts.getTopThreeCategories.useQuery();
+
+  const {
+    data: lineChartData,
+    isLoading: lineChartDataLoading,
+    isError: fetchingLineChartDataFailed,
+  } = api.charts.getLineChartData.useQuery();
+
+  if (lineChartDataLoading || topItemsLoading || topCategoriesLoading) {
+    return <Loadingpage />;
+  }
+
+  if (
+    fetchingTopItemsFailed ||
+    fetchingTopCategoriesFailed ||
+    fetchingLineChartDataFailed
+  ) {
+    return <ErrorPage />;
+  }
+
+  function goToCreateList() {
+    router.push('/');
+    setSidebarOption('cart');
+  }
 
   return (
-    <div className="flex w-full flex-col px-3 py-8 md:px-6 xl:px-20">
-      <div className="grid lg:grid-cols-2 gap-12">
-        <div className="grid gap-4">
+    <div className="flex w-full flex-col px-3 py-8 md:px-6 xl:px-20 ">
+      <div className="grid lg:grid-cols-2 gap-12 mb-12">
+        <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-medium mb-2 md:mb-4">Top items</h1>
           {!!topThreeItems &&
             topThreeItems.map((item) => (
@@ -106,8 +136,29 @@ export default function Statistics() {
                 key={item.id + item.name}
               />
             ))}
+          {!topThreeItems && (
+            <div className="flex-grow">
+              <p>
+                There is not enough data to show{' '}
+                <span className="font-medium text-primary">top items</span>{' '}
+                statistics.{' '}
+                <span
+                  className="font-medium text-primary underline cursor-pointer hidden lg:inline"
+                  onClick={goToCreateList}
+                >
+                  Create new lists
+                </span>
+                <Link
+                  href="/"
+                  className="font-medium text-primary underline cursor-pointer lg:hidden"
+                >
+                  Create new lists
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
-        <div className="grid gap-4">
+        <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-medium mb-2 md:mb-4">Top categories</h1>
           {!!topThreeCategories &&
             topThreeCategories.map((item) => (
@@ -118,9 +169,52 @@ export default function Statistics() {
                 key={item.id + item.name}
               />
             ))}
+          {!topThreeCategories && (
+            <div className="flex-grow">
+              <p>
+                There is not enough data to show{' '}
+                <span className="font-medium text-primary">top Categories</span>{' '}
+                statistics.{' '}
+                <span
+                  className="font-medium text-primary underline cursor-pointer hidden lg:inline"
+                  onClick={goToCreateList}
+                >
+                  Create new lists
+                </span>
+                <Link
+                  href="/"
+                  className="font-medium text-primary underline cursor-pointer lg:hidden"
+                >
+                  Create new lists
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
       </div>
-      <LineChartWithItemsPerMonth data={lineChartData} />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-medium mb-2 md:mb-4">Monthly Summary</h1>
+        {!!lineChartData && <LineChartWithItemsPerMonth data={lineChartData} />}
+        {!lineChartData && (
+          <p>
+            There is not enough data to show{' '}
+            <span className="font-medium text-primary">top Categories</span>{' '}
+            statistics.{' '}
+            <span
+              className="font-medium text-primary underline cursor-pointer hidden lg:inline"
+              onClick={goToCreateList}
+            >
+              Create new lists
+            </span>
+            <Link
+              href="/"
+              className="font-medium text-primary underline cursor-pointer lg:hidden"
+            >
+              Create new lists
+            </Link>
+          </p>
+        )}
+      </div>
     </div>
   );
 }

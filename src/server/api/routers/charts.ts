@@ -122,10 +122,12 @@ export const chartsRouter = createTRPCRouter({
         }
       });
 
-      return Object.entries(result).map(([date, itemsAmount]) => ({
-        date,
-        items: itemsAmount,
-      }));
+      return Object.entries(result)
+        .map(([date, itemsAmount]) => ({
+          date,
+          items: itemsAmount,
+        }))
+        .slice(-5);
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
