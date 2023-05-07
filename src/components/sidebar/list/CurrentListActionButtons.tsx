@@ -40,7 +40,7 @@ function ConfirmCancelListModal() {
   const { setSidebarOption } = useSidebar();
   const router = useRouter();
 
-  const { mutate } = useChangeListStatus({
+  const { mutate, isLoading } = useChangeListStatus({
     succesToastMessage: 'Your current list was cancelled',
     onError: closeModal,
     onSuccess: () => {
@@ -70,14 +70,16 @@ function ConfirmCancelListModal() {
       </p>
       <div className="self-end space-x-6">
         <button
-          className="rounded-lg py-2 px-4 font-medium"
+          className="rounded-lg py-2 px-4 font-medium disabled:bg-neutral-light disabled:text-white transition"
           onClick={closeModal}
+          disabled={isLoading}
         >
           Cancel
         </button>
         <button
-          className="bg-danger rounded-lg py-2 px-4 text-white font-medium"
+          className="bg-danger rounded-lg py-2 px-4 text-white font-medium disabled:bg-neutral-light transition"
           onClick={onListCancel}
+          disabled={isLoading}
         >
           Yes
         </button>
@@ -91,7 +93,7 @@ export default function CurrentListActionButtons() {
   const { setSidebarOption } = useSidebar();
   const router = useRouter();
 
-  const { mutate } = useChangeListStatus({
+  const { mutate, isLoading } = useChangeListStatus({
     succesToastMessage: 'Your current list was completed',
     onSuccess: () => {
       window.innerWidth <= 768 && setSidebarOption(undefined);
@@ -107,16 +109,18 @@ export default function CurrentListActionButtons() {
   };
 
   return (
-    <div className="flex space-x-6 justify-evenly px-4 pt-4 pb-16 xl:pb-4 bg-white">
+    <div className="flex space-x-6 justify-evenly px-4 pt-4 pb-16 md:pb-4 bg-white">
       <button
-        className="rounded-xl py-2 px-3 md:py-3 md:px-5 w-min font-medium transition hover:bg-danger hover:text-white"
+        className="rounded-xl py-2 px-3 md:py-3 md:px-5 w-min font-medium transition hover:bg-danger hover:text-white disabled:bg-neutral-light disabled:text-white"
         onClick={onCancel}
+        disabled={isLoading}
       >
         Cancel
       </button>
       <button
         onClick={onComplete}
-        className="font-medium bg-success rounded-xl text-white py-2 px-3 md:py-3 md:px-5 w-min"
+        className="font-medium bg-success rounded-xl text-white py-2 px-3 md:py-3 md:px-5 w-min disabled:bg-neutral-light transition"
+        disabled={isLoading}
       >
         Complete
       </button>

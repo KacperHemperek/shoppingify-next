@@ -14,7 +14,7 @@ function ConfirmSaveListAsCurrentModal({
 }) {
   const { closeModal } = useModal();
 
-  const { createList } = useCreateNewList({
+  const { createList, isLoading } = useCreateNewList({
     onSuccessCallback: () => {
       resetListNameInput();
       closeModal();
@@ -43,14 +43,16 @@ function ConfirmSaveListAsCurrentModal({
 
       <div className="self-end space-x-6">
         <button
-          className="bg-danger rounded-lg py-2 px-4 text-white font-medium"
+          className="bg-danger rounded-lg py-2 px-4 text-white font-medium disabled:bg-neutral-light transition"
           onClick={closeModal}
+          disabled={isLoading}
         >
           Cancel
         </button>
         <button
-          className="bg-primary rounded-lg py-2 px-4 text-white font-medium"
+          className="bg-primary rounded-lg py-2 px-4 text-white font-medium disabled:bg-neutral-light transition"
           onClick={onCreateList}
+          disabled={isLoading}
         >
           Ok
         </button>

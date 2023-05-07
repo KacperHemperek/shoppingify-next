@@ -16,7 +16,7 @@ function useCreateNewList({
   const dispatch = useAppDispatch();
   const apiUtils = api.useContext();
 
-  const { mutate } = api.list.create.useMutation({
+  const { mutate, ...rest } = api.list.create.useMutation({
     onError: (e) => {
       toast.error(formatErrorMessage(e) ?? 'Sorry something went wrong!');
     },
@@ -41,7 +41,7 @@ function useCreateNewList({
     });
   }
 
-  return { createList, items };
+  return { createList, items, ...rest };
 }
 
 export default useCreateNewList;
