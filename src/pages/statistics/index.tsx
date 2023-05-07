@@ -126,7 +126,7 @@ export default function Statistics() {
     <div className="flex w-full flex-col px-3 py-8 md:px-6 xl:px-20 ">
       <div className="grid lg:grid-cols-2 gap-12 mb-12">
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-medium mb-2 md:mb-4">Top items</h1>
+          <h1 className="text-2xl font-medium mb-4 md:mb-8">Top items</h1>
           {!!topThreeItems &&
             topThreeItems.map((item) => (
               <BarChartRow
@@ -159,7 +159,7 @@ export default function Statistics() {
           )}
         </div>
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-medium mb-2 md:mb-4">Top categories</h1>
+          <h1 className="text-2xl font-medium mb-4 md:mb-8">Top categories</h1>
           {!!topThreeCategories &&
             topThreeCategories.map((item) => (
               <BarChartRow
@@ -192,8 +192,8 @@ export default function Statistics() {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-medium mb-2 md:mb-4">Monthly Summary</h1>
+      <div className="flex flex-col gap-4 pb-10 md:pb-4 xl:pb-0">
+        <h1 className="text-2xl font-medium mb-4 md:mb-8">Monthly Summary</h1>
         {!!lineChartData && <LineChartWithItemsPerMonth data={lineChartData} />}
         {!lineChartData && (
           <p>

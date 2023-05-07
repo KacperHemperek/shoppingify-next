@@ -46,7 +46,7 @@ function Layout({ children }: PropsWithChildren) {
   const { user } = useUser();
 
   return (
-    <div className="flex h-screen w-screen overflow-x-hidden bg-neutral-extralight">
+    <div className="flex h-full w-screen overflow-x-hidden bg-neutral-extralight">
       <NavBar />
       <main className="scrollbar flex h-screen w-full overflow-y-auto bg-neutral-extralight">
         <RouteGuard>{children}</RouteGuard>
