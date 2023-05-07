@@ -27,7 +27,7 @@ export default function Cart() {
   const { openModal } = useModal();
   const listname = useAppSelector(getListname);
 
-  const { createList, items } = useCreateNewList({
+  const { createList, items, isLoading } = useCreateNewList({
     onSuccessCallback: () => {
       setListname('');
     },
@@ -40,7 +40,8 @@ export default function Cart() {
     { enabled: !!currentListId }
   );
 
-  const saveListDisabled = !listname?.trim()?.length || !items?.length;
+  const saveListDisabled =
+    !listname?.trim()?.length || !items?.length || isLoading;
 
   function setListname(value: string) {
     dispatch(setListnameRedux(value));
