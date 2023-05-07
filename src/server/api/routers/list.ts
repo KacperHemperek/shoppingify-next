@@ -1,4 +1,4 @@
-import { ListState } from '@prisma/client';
+import { type ListState } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 

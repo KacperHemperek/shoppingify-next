@@ -18,7 +18,7 @@ import Loadingpage from '@/components/layouts/LoadingPage';
 
 import useSidebar from '@/hooks/useSidebar';
 
-import { RouterOutputs, api } from '@/utils/api';
+import { type RouterOutputs, api } from '@/utils/api';
 
 function BarChartRow({
   itemName,
