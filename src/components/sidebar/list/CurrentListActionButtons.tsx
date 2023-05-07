@@ -107,7 +107,7 @@ export default function CurrentListActionButtons() {
   };
 
   return (
-    <div className="flex space-x-6 justify-evenly p-4 bg-white">
+    <div className="flex space-x-6 justify-evenly px-4 pt-4 pb-16 xl:pb-4 bg-white">
       <button
         className="rounded-xl py-2 px-3 md:py-3 md:px-5 w-min font-medium transition hover:bg-danger hover:text-white"
         onClick={onCancel}
