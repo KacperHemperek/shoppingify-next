@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect } from 'react';
 
 import NavBar from '@/components/NavBar';
-import Loadingpage from '@/components/layounts/LoadingPage';
+import Loadingpage from '@/components/layouts/LoadingPage';
 import SideBar from '@/components/sidebar/SideBarContainer';
 
 import useSidebar from '@/hooks/useSidebar';
