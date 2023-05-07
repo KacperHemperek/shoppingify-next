@@ -127,7 +127,7 @@ export default function Statistics() {
       <div className="grid lg:grid-cols-2 gap-12 mb-12">
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-medium mb-4 md:mb-8">Top items</h1>
-          {!!topThreeItems &&
+          {!!topThreeItems.length &&
             topThreeItems.map((item) => (
               <BarChartRow
                 allItems={item.allItemsAmount}
@@ -136,7 +136,7 @@ export default function Statistics() {
                 key={item.id + item.name}
               />
             ))}
-          {!topThreeItems && (
+          {!topThreeItems.length && (
             <div className="flex-grow">
               <p>
                 There is not enough data to show{' '}
@@ -160,7 +160,7 @@ export default function Statistics() {
         </div>
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-medium mb-4 md:mb-8">Top categories</h1>
-          {!!topThreeCategories &&
+          {!!topThreeCategories.length &&
             topThreeCategories.map((item) => (
               <BarChartRow
                 allItems={item.allItemsAmount}
@@ -169,7 +169,7 @@ export default function Statistics() {
                 key={item.id + item.name}
               />
             ))}
-          {!topThreeCategories && (
+          {!topThreeCategories.length && (
             <div className="flex-grow">
               <p>
                 There is not enough data to show{' '}
@@ -194,8 +194,10 @@ export default function Statistics() {
       </div>
       <div className="flex flex-col gap-4 pb-10 md:pb-4 xl:pb-0">
         <h1 className="text-2xl font-medium mb-4 md:mb-8">Monthly Summary</h1>
-        {!!lineChartData && <LineChartWithItemsPerMonth data={lineChartData} />}
-        {!lineChartData && (
+        {!!lineChartData.length && (
+          <LineChartWithItemsPerMonth data={lineChartData} />
+        )}
+        {!lineChartData.length && (
           <p>
             There is not enough data to show{' '}
             <span className="font-medium text-primary">top Categories</span>{' '}

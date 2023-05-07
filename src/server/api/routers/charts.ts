@@ -6,6 +6,7 @@ export const chartsRouter = createTRPCRouter({
   getTopThreeItems: userProtectedProcedure.query(async ({ ctx }) => {
     try {
       const topThreeItemsWithTotalAmount = await ctx.prisma.listItem.groupBy({
+        where: { list: { userId: ctx.user.id } },
         by: ['itemId'],
         _sum: { amount: true },
         orderBy: { _count: { amount: 'desc' } },
@@ -19,6 +20,7 @@ export const chartsRouter = createTRPCRouter({
         select: { name: true, id: true },
       });
       const allUsersItems = await ctx.prisma.listItem.aggregate({
+        where: { list: { userId: ctx.user.id } },
         _sum: { amount: true },
       });
 
@@ -51,6 +53,7 @@ export const chartsRouter = createTRPCRouter({
     try {
       const topThreeCategoriesWithTotalAmount =
         await ctx.prisma.listItem.groupBy({
+          where: { list: { userId: ctx.user.id } },
           by: ['categoryId'],
           _sum: { amount: true },
           orderBy: { _count: { amount: 'desc' } },
@@ -67,6 +70,7 @@ export const chartsRouter = createTRPCRouter({
           select: { name: true, id: true },
         });
       const allUsersItems = await ctx.prisma.listItem.aggregate({
+        where: { list: { userId: ctx.user.id } },
         _sum: { amount: true },
       });
 
