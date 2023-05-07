@@ -33,12 +33,12 @@ model Session {
 }
 
 model Category {
-  id    Int    @id @unique @default(autoincrement())
-  name  String
-  items Item[]
-
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id        Int        @id @unique @default(autoincrement())
+  name      String
+  items     Item[]
+  listItems ListItem[]
+  user      User       @relation(fields: [userId], references: [id])
+  userId    Int
 }
 
 model Item {
@@ -73,8 +73,10 @@ model ListItem {
   amount  Int
   checked Boolean
 
-  list   List @relation(fields: [listId], references: [id])
-  listId Int
-  item   Item @relation(fields: [itemId], references: [id])
-  itemId Int
+  list       List      @relation(fields: [listId], references: [id])
+  listId     Int
+  item       Item      @relation(fields: [itemId], references: [id])
+  itemId     Int
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
 }

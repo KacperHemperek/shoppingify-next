@@ -3,7 +3,7 @@ import { type ListState } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { memo, useMemo } from 'react';
 
-import Loadingpage from '@/components/layounts/LoadingPage';
+import Loadingpage from '@/components/layouts/LoadingPage';
 
 import useSidebar from '@/hooks/useSidebar';
 

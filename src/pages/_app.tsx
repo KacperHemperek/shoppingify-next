@@ -6,7 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ModalContextProvider from '@/components/context/ModalContext';
 import SidebarContextProvider from '@/components/context/SidebarContext';
 import { UserContextProvider } from '@/components/context/UserContext';
-import Layout from '@/components/layounts/layout';
+import Layout from '@/components/layouts/layout';
 
 import { persistor, store } from '@/redux/store';
 

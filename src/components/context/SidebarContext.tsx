@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import type { PropsWithChildren } from 'react';
 
-import type { ShowAddItemOptions } from '@/components/layounts/layout';
+import type { ShowAddItemOptions } from '@/components/layouts/layout';
 
 import type { Item } from '@/types/Item.interface';
 

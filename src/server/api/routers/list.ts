@@ -1,4 +1,4 @@
-import { ListState } from '@prisma/client';
+import { type ListState } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -7,6 +7,7 @@ import { createTRPCRouter, userProtectedProcedure } from '@/server/api/trpc';
 const itemSchema = z.object({
   amount: z.number().min(1),
   itemId: z.number().min(1),
+  categoryId: z.number().min(1),
 });
 
 export type FormatedItem = {
@@ -73,11 +74,14 @@ export const listRouter = createTRPCRouter({
         });
       }
 
+      console.log({ items: input.items });
+
       try {
         const itemsToCreate = input.items.map((item) => ({
           amount: item.amount,
           checked: false,
           itemId: item.itemId,
+          categoryId: item.categoryId,
         }));
 
         await ctx.prisma.list.updateMany({

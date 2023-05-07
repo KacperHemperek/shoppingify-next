@@ -10,7 +10,7 @@ import { api } from '@/utils/api';
 import { BackButton } from '../BackButton';
 
 function ItemInfo() {
-  const { item, setSidebarOption } = useSidebar();
+  const { item, categoryId, setSidebarOption } = useSidebar();
 
   const dispatch = useAppDispatch();
   const itemOnList = useAppSelector((state) =>
@@ -36,13 +36,14 @@ function ItemInfo() {
   }
 
   function toggleItemOnList() {
-    if (item) {
+    if (item && categoryId) {
       if (!itemOnList) {
         dispatch(
           addItem({
             categoryName: item.category,
             itemId: item.id,
             itemName: item.name,
+            categoryId: categoryId,
           })
         );
       } else {

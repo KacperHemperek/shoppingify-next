@@ -56,7 +56,7 @@ function LoginFormContent() {
   return (
     <>
       <motion.form
-        className="flex w-full flex-col "
+        className="flex w-full flex-col space-y-6"
         onSubmit={handleSubmit(onSubmit)}
       >
         <ErrorAlert text={formatedError} visible={!!loginError} />
@@ -72,7 +72,7 @@ function LoginFormContent() {
           />
         </label>
         <label htmlFor="email" className="label mb-4">
-          <span className="mb-2 mt-6">Password</span>
+          <span className="mb-2">Password</span>
           <input
             type="password"
             className="input"
@@ -81,7 +81,7 @@ function LoginFormContent() {
             disabled={loggingIn}
           />
         </label>
-        <div className="mt-6">
+        <div className="">
           <FormSubmitButton
             buttonText="Login"
             isValid={isLoginFormValid}
@@ -111,12 +111,13 @@ function RegisterFormContent() {
   const utils = api.useContext();
 
   const {
-    mutateAsync: signUp,
+    mutate: signUp,
     isLoading: signingUp,
     error: signUpError,
   } = api.user.signIn.useMutation({
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
+      router.push('/');
     },
     onError: () => {
       resetLoginForm();
@@ -126,10 +127,7 @@ function RegisterFormContent() {
   const router = useRouter();
 
   const onSubmit = async (data: RegisterFormInputs) => {
-    try {
-      await signUp(data);
-      router.push('/');
-    } catch (_) {}
+    signUp(data);
   };
 
   const error = useMemo(

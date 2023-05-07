@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
-import { PropsWithChildren, useEffect } from 'react';
+import { type PropsWithChildren, useEffect } from 'react';
 
 import NavBar from '@/components/NavBar';
-import Loadingpage from '@/components/layounts/LoadingPage';
+import Loadingpage from '@/components/layouts/LoadingPage';
 import SideBar from '@/components/sidebar/SideBarContainer';
 
 import useSidebar from '@/hooks/useSidebar';
@@ -18,7 +18,7 @@ function RouteGuard({ children }: PropsWithChildren) {
     if (window.innerWidth <= 768) {
       setSidebarOption(undefined);
     }
-  }, [router.pathname]);
+  }, [router.pathname, setSidebarOption]);
 
   // input all your restricted routes
   const restrictedRoutes: string[] = ['/', '/history', '/statistics'];
@@ -46,7 +46,7 @@ function Layout({ children }: PropsWithChildren) {
   const { user } = useUser();
 
   return (
-    <div className="flex h-screen w-screen overflow-x-hidden bg-neutral-extralight">
+    <div className="flex h-full w-screen overflow-x-hidden bg-neutral-extralight">
       <NavBar />
       <main className="scrollbar flex h-screen w-full overflow-y-auto bg-neutral-extralight">
         <RouteGuard>{children}</RouteGuard>

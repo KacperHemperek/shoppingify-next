@@ -2,8 +2,8 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
 
 import CategoriesList from '@/components/CategoriesList';
-import ErrorPage from '@/components/layounts/ErrorPage';
-import Loadingpage from '@/components/layounts/LoadingPage';
+import ErrorPage from '@/components/layouts/ErrorPage';
+import Loadingpage from '@/components/layouts/LoadingPage';
 
 import type { CategoryType } from '@/types/Categoy.interface';
 

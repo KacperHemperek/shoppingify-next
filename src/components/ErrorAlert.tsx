@@ -23,7 +23,7 @@ function ErrorAlert({ text, visible }: { text: string; visible: boolean }) {
             duration: 0.25,
             delay: 0.15,
           }}
-          className="mb-6 flex w-full items-center  space-x-3 font-semibold text-neutral-dark"
+          className="flex w-full items-center  space-x-3 font-semibold text-neutral-dark"
         >
           <div className="flex w-full items-center space-x-3 rounded-xl bg-red-500  p-2 font-semibold text-neutral-extralight ">
             <XCircleIcon className="h-9 w-9 " />

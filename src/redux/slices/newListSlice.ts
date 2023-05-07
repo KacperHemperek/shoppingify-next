@@ -8,6 +8,7 @@ export type NewListItem = {
   amount: number;
   name: string;
   category: string;
+  categoryId: number;
 };
 
 type NewListState = {
@@ -30,6 +31,7 @@ export const newListSlice = createSlice({
         itemId: number;
         itemName: string;
         categoryName: string;
+        categoryId: number;
       }>
     ) => {
       const category = state.categories[action.payload.categoryName];
@@ -40,6 +42,7 @@ export const newListSlice = createSlice({
           id: action.payload.itemId,
           name: action.payload.itemName,
           category: action.payload.categoryName,
+          categoryId: action.payload.categoryId,
         });
       } else {
         state.categories[action.payload.categoryName] = [
@@ -48,6 +51,7 @@ export const newListSlice = createSlice({
             id: action.payload.itemId,
             name: action.payload.itemName,
             category: action.payload.categoryName,
+            categoryId: action.payload.categoryId,
           },
         ];
       }

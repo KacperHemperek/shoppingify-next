@@ -1,17 +1,9 @@
-import {
-  HandThumbUpIcon,
-  PencilSquareIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
 import { type ListState } from '@prisma/client';
 import classnames from 'classnames';
 import { motion, useAnimationControls } from 'framer-motion';
-import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { useMemo } from 'react';
 
 import useSidebar from '@/hooks/useSidebar';
-
-import { formatErrorMessage } from '@/lib/trpcErrorFormater';
 
 import { api } from '@/utils/api';
 
@@ -175,86 +167,10 @@ export default function ListView({ listId }: { listId?: number }) {
     { listId: listId ?? -1 },
     {
       enabled: !!listId,
-      onSuccess: (data) => {
-        setNewName(data?.name);
-      },
     }
   );
 
-  const apiUtils = api.useContext();
-
-  const { mutate: updateListName } = api.list.updateListName.useMutation({
-    onMutate: ({ listId, name }) => {
-      apiUtils.list.getListById.cancel();
-      apiUtils.list.getAll.cancel();
-
-      const prevList = apiUtils.list.getListById.getData({ listId });
-      const prevListOfLists = apiUtils.list.getAll.getData(undefined);
-
-      const listWithNewName = !prevList ? prevList : { ...prevList, name };
-      const listOfListsWithNewListName = prevListOfLists?.map((list) =>
-        list.id === listId ? { ...list, name } : list
-      );
-
-      apiUtils.list.getListById.setData({ listId }, listWithNewName);
-      apiUtils.list.getAll.setData(undefined, listOfListsWithNewListName);
-
-      setEditMode(false);
-      return { prevList, prevListOfLists };
-    },
-    onError: (err, input, context) => {
-      toast.error(formatErrorMessage(err) ?? 'Unknown Error occured');
-
-      if (!context?.prevList || !context.prevListOfLists) return;
-
-      apiUtils.list.getListById.setData(
-        { listId: input.listId },
-        context.prevList
-      );
-      apiUtils.list.getAll.setData(undefined, context.prevListOfLists);
-    },
-    onSettled: () => {
-      listData && apiUtils.list.getListById.invalidate({ listId: listData.id });
-      apiUtils.list.getAll.invalidate();
-    },
-  });
-
-  const [editMode, setEditMode] = useState(false);
-  const [newName, setNewName] = useState<string | undefined>(listData?.name);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
   const { setSidebarOption } = useSidebar();
-
-  const tooltipControl = useAnimationControls();
-
-  function toggleEditMode() {
-    if (editMode) {
-      setNewName(listData?.name);
-    }
-
-    setEditMode((prev) => !prev);
-  }
-
-  useEffect(() => {
-    if (editMode) {
-      inputRef.current?.focus();
-    }
-  }, [editMode]);
-
-  function onChangeNameSubmit(e: FormEvent) {
-    e.preventDefault();
-
-    if (!listData) return;
-
-    if (!newName) {
-      setNewName(listData.name);
-      setEditMode(false);
-
-      return;
-    }
-
-    updateListName({ listId: listData.id, name: newName });
-  }
 
   if (fetchingListError) {
     return (
