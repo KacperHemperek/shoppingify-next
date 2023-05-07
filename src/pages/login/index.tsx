@@ -111,12 +111,13 @@ function RegisterFormContent() {
   const utils = api.useContext();
 
   const {
-    mutateAsync: signUp,
+    mutate: signUp,
     isLoading: signingUp,
     error: signUpError,
   } = api.user.signIn.useMutation({
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
+      router.push('/');
     },
     onError: () => {
       resetLoginForm();
@@ -126,10 +127,7 @@ function RegisterFormContent() {
   const router = useRouter();
 
   const onSubmit = async (data: RegisterFormInputs) => {
-    try {
-      await signUp(data);
-      router.push('/');
-    } catch (_) {}
+    signUp(data);
   };
 
   const error = useMemo(
