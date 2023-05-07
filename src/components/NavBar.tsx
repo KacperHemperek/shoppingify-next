@@ -17,6 +17,9 @@ import React from 'react';
 import useSidebar from '@/hooks/useSidebar';
 import { useUser } from '@/hooks/useUser';
 
+import { useAppDispatch } from '@/redux/hooks';
+import { clearList } from '@/redux/slices/newListSlice';
+
 import { api } from '@/utils/api';
 
 function NavButtonOption({
@@ -70,12 +73,15 @@ function NavLinkOption({
 }
 
 function NavBar() {
+  const dispatch = useAppDispatch();
+
   const { user } = useUser();
   const utils = api.useContext();
   const router = useRouter();
   const { mutate: logoutMutation } = api.user.logout.useMutation({
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
+      dispatch(clearList());
       router.push('/login');
     },
   });
