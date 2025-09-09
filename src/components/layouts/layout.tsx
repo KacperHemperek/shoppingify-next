@@ -3,7 +3,7 @@ import { type PropsWithChildren, useEffect } from 'react';
 
 import NavBar from '@/components/NavBar';
 import Loadingpage from '@/components/layouts/LoadingPage';
-import SideBar from '@/components/sidebar/SideBarContainer';
+import Sidebar from '@/components/sidebar/SideBarContainer';
 
 import useSidebar from '@/hooks/useSidebar';
 import { useUser } from '@/hooks/useUser';
@@ -51,7 +51,7 @@ function Layout({ children }: PropsWithChildren) {
       <main className="scrollbar flex h-screen w-full overflow-y-auto bg-neutral-extralight">
         <RouteGuard>{children}</RouteGuard>
       </main>
-      {user && <SideBar />}
+      {user && <Sidebar />}
     </div>
   );
 }

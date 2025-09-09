@@ -20,20 +20,9 @@ type SidebarContextType = {
   >;
 };
 
-export const SidebarContext = React.createContext<SidebarContextType>({
-  item: null,
-  categoryId: null,
-  /* eslint-disable  @typescript-eslint/no-empty-function */
-  show: () => {},
-  /* eslint-disable  @typescript-eslint/no-empty-function */
-  hide: () => {},
-  /* eslint-disable  @typescript-eslint/no-empty-function */
-  setSidebarOption: () => {},
-  /* eslint-disable  @typescript-eslint/no-empty-function */
-  setShownListId: () => {},
-  sidebarOption: undefined,
-  shownListId: undefined,
-});
+export const SidebarContext = React.createContext<SidebarContextType | null>(
+  null
+);
 
 function SidebarContextProvider({ children }: PropsWithChildren) {
   const [sidebarOption, setSidebarOption] = useState<

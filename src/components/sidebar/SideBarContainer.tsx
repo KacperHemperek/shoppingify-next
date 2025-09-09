@@ -1,6 +1,7 @@
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import { useScreen } from 'usehooks-ts';
 
 import useSidebar from '@/hooks/useSidebar';
 
@@ -23,7 +24,7 @@ const variants = {
   },
 };
 
-function DesktopSideBar() {
+function DesktopSidebar() {
   const { sidebarOption, item, shownListId: currentListId } = useSidebar();
 
   return (
@@ -52,7 +53,7 @@ function DesktopSideBar() {
   );
 }
 
-function MobileSideBar() {
+function MobileSidebar() {
   const { sidebarOption, item, shownListId: currentListId } = useSidebar();
 
   return (
@@ -87,21 +88,24 @@ function MobileSideBar() {
   );
 }
 
-function SideBar() {
+function Sidebar() {
   const { setSidebarOption } = useSidebar();
 
+  const screen = useScreen();
+
   useEffect(() => {
-    if (window.innerWidth > 768) {
+    if (screen.width >= 768) {
+      console.log('Setting sidebar option to cart');
       setSidebarOption('cart');
     }
-  }, [setSidebarOption]);
+  }, [setSidebarOption, screen.width]);
 
   return (
     <>
-      <DesktopSideBar />
-      <MobileSideBar />
+      <DesktopSidebar />
+      <MobileSidebar />
     </>
   );
 }
 
-export default SideBar;
+export default Sidebar;
