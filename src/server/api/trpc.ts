@@ -104,12 +104,31 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    console.log('error formatter', error, shape);
+    if (error.cause instanceof ZodError) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError: error.cause.flatten(),
+        },
+      };
+    }
+    // NOTE: This is used when error is a TRPCError with no cause. Cause should not be used for TRPCErrors
+    if (error.cause === undefined) {
+      return {
+        ...shape,
+        data: {
+          httpStatus: shape.data.code,
+        },
+      };
+    }
+
     return {
-      ...shape,
+      message: 'Internal server error',
+      code: shape.code,
       data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
+        httpStatus: shape.data.httpStatus,
       },
     };
   },
