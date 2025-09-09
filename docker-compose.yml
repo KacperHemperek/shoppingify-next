@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: shoppingify_db
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: shoppingify
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+
+  shadow-db:
+    image: mysql:8.0
+    container_name: shoppingify_shadow_db
+    ports:
+      - '3307:3306'
+    volumes:
+      - ./database_shadow:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: shoppingify_shadow
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
