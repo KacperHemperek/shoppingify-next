@@ -154,7 +154,7 @@ export default function Cart() {
             <input
               type="text"
               placeholder="Enter list name"
-              className="grow px-4 font-medium outline-none"
+              className="grow pl-4 font-medium outline-none min-w-0"
               value={listname}
               onChange={(e) => {
                 setListname(e.target.value);

@@ -27,7 +27,7 @@ function DesktopSideBar() {
   const { sidebarOption, item, shownListId: currentListId } = useSidebar();
 
   return (
-    <div className="hidden w-[calc(100%-56px)] md:block md:w-full md:max-w-[300px] xl:max-w-sm">
+    <div className="hidden w-[calc(100%-63px)] md:block md:w-full md:max-w-[300px] xl:max-w-sm">
       <AnimatePresence initial={false} mode="popLayout">
         <motion.div
           variants={variants}
@@ -60,7 +60,8 @@ function MobileSideBar() {
       key="sidebar"
       animate={sidebarOption ? { x: 0 } : { x: '100%' }}
       transition={{ type: 'spring', duration: 0.5, bounce: 0.1 }}
-      className="fixed right-0 h-screen max-h-screen w-[calc(100vw-56px)] bg-slate-50 md:hidden"
+      // NOTE: width calc(100vw - 63px) because 63px is the width of the side nav menu
+      className="fixed right-0 h-screen max-h-screen w-[calc(100vw-63px)] bg-slate-50 md:hidden"
     >
       <AnimatePresence initial={false} mode="popLayout">
         <motion.div
