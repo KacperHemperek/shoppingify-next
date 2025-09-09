@@ -143,7 +143,8 @@ function NavBar() {
           </NavLinkOption>
         )}
       </div>
-      <div className="flex flex-col p-2 lg:p-6">
+      {/* NOTE: padding on the bottom here is used to be able to view add and cart button on safari or any other mobile browser that has search bar at the bottom */}
+      <div className="flex flex-col p-2 pb-16 lg:p-6">
         <button
           className="mb-6 rounded-full bg-success p-3"
           onClick={() => setSidebarOption('addItem')}

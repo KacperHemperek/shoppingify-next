@@ -38,23 +38,23 @@ function ConfirmSaveListAsCurrentModal({
         is now your current list, do you want to{' '}
         <span className="text-danger font-medium">cancel</span> that list and
         make <span className="text-primary font-medium"> {newListName}</span>{' '}
-        your current list
+        your current list, are you sure you want to do this?
       </p>
 
-      <div className="self-end space-x-6">
+      <div className="flex flex-col-reverse gap-2 md:gap-6 md:flex-row md:self-end">
         <button
           className="bg-danger rounded-lg py-2 px-4 text-white font-medium disabled:bg-neutral-light transition"
           onClick={closeModal}
           disabled={isLoading}
         >
-          Cancel
+          Abandon
         </button>
         <button
-          className="bg-primary rounded-lg py-2 px-4 text-white font-medium disabled:bg-neutral-light transition"
+          className="bg-primary rounded-lg py-2 px-4 text-white font-medium disabled:bg-neutral-light transition md:max-w-full"
           onClick={onCreateList}
           disabled={isLoading}
         >
-          Ok
+          Yes, I'm sure
         </button>
       </div>
     </div>
