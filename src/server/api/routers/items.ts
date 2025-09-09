@@ -1,4 +1,3 @@
-import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import type { CategoryType } from '@/types/Categoy.interface';
@@ -43,54 +42,50 @@ export const itemRouter = createTRPCRouter({
       z.object({
         name: z.string().min(2, 'Name must have least two letters'),
         categoryId: z.number().min(1).optional(),
-        desc: z.string().min(2, 'Description must have least two letters'),
+        desc: z.string().optional(),
         categoryName: z.string().min(2, 'Category must have least two letters'),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      try {
-        if (!input.categoryId) {
-          await ctx.prisma.category.create({
-            data: {
-              name: input.categoryName,
-              userId: ctx.user.id,
-              items: { create: { desc: input.desc, name: input.name } },
-            },
-          });
-          return;
-        }
-
-        await ctx.prisma.item.create({
+      if (!input.categoryId) {
+        await ctx.prisma.category.create({
           data: {
-            desc: input.desc,
-            name: input.name,
-            categoryId: input.categoryId,
+            name: input.categoryName,
+            userId: ctx.user.id,
+            items: { create: { desc: input.desc ?? '', name: input.name } },
           },
         });
-      } catch (e) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'There was a problem creating new item',
-          cause: e,
-        });
+        return;
       }
+
+      await ctx.prisma.item.create({
+        data: {
+          desc: input.desc ?? '',
+          name: input.name,
+          categoryId: input.categoryId,
+        },
+      });
     }),
   delete: userProtectedProcedure
     .input(z.object({ itemId: z.number(), categoryName: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      try {
-        const category = await ctx.prisma.category.findFirst({
+      const itemId = await ctx.prisma.$transaction(async (prisma) => {
+        const category = await prisma.category.findFirst({
           where: { userId: ctx.user.id, name: input.categoryName },
           select: { id: true, items: true },
         });
 
         if (category?.items && category?.items.length <= 1) {
-          await ctx.prisma.item.delete({ where: { id: input.itemId } });
-          await ctx.prisma.category.delete({ where: { id: category.id } });
-          return;
+          await prisma.item.delete({ where: { id: input.itemId } });
+          await prisma.category.delete({ where: { id: category.id } });
+          return input.itemId;
         }
+        await prisma.item.delete({ where: { id: input.itemId } });
+        return input.itemId;
+      });
 
-        await ctx.prisma.item.delete({ where: { id: input.itemId } });
-      } catch (e) {}
+      return {
+        itemId,
+      };
     }),
 });

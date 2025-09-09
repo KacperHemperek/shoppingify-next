@@ -75,7 +75,14 @@ function ItemInfo() {
         <div className="my-5">
           <h3 className="mb-2 text-xs font-medium text-neutral-light">note</h3>
 
-          <span className="text-lg font-medium">{item?.desc}</span>
+          {!!item?.desc.length && (
+            <span className="text-lg font-medium">{item?.desc}</span>
+          )}
+          {!item?.desc.length && (
+            <span className="text-lg font-medium italic text-neutral-light">
+              no note
+            </span>
+          )}
         </div>
       </div>
       <div className="flex space-x-6 self-center">

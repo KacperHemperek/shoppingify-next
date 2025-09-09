@@ -74,36 +74,25 @@ export const listRouter = createTRPCRouter({
         });
       }
 
-      console.log({ items: input.items });
+      const itemsToCreate = input.items.map((item) => ({
+        amount: item.amount,
+        checked: false,
+        itemId: item.itemId,
+        categoryId: item.categoryId,
+      }));
 
-      try {
-        const itemsToCreate = input.items.map((item) => ({
-          amount: item.amount,
-          checked: false,
-          itemId: item.itemId,
-          categoryId: item.categoryId,
-        }));
+      await ctx.prisma.list.updateMany({
+        where: { userId: ctx.user.id, state: 'current' },
+        data: { state: 'cancelled' },
+      });
 
-        await ctx.prisma.list.updateMany({
-          where: { userId: ctx.user.id, state: 'current' },
-          data: { state: 'cancelled' },
-        });
-
-        await ctx.prisma.list.create({
-          data: {
-            name: input.listName,
-            userId: ctx.user.id,
-            items: { create: itemsToCreate },
-          },
-        });
-      } catch (e) {
-        console.error(e);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          cause: e,
-          message: 'There was unexprected server error',
-        });
-      }
+      await ctx.prisma.list.create({
+        data: {
+          name: input.listName,
+          userId: ctx.user.id,
+          items: { create: itemsToCreate },
+        },
+      });
     }),
   getAll: userProtectedProcedure.query(async ({ ctx }) => {
     try {
@@ -124,41 +113,39 @@ export const listRouter = createTRPCRouter({
   getListById: userProtectedProcedure
     .input(z.object({ listId: z.number().min(1, 'This is not a valid ID') }))
     .query(async ({ ctx, input }) => {
-      try {
-        const list = await ctx.prisma.list.findFirst({
-          where: {
-            id: input.listId,
-          },
-          select: {
-            name: true,
-            id: true,
-            state: true,
-            items: {
-              select: {
-                item: {
-                  select: {
-                    category: { select: { name: true } },
-                    id: true,
-                    name: true,
-                  },
+      const list = await ctx.prisma.list.findFirst({
+        where: {
+          id: input.listId,
+        },
+        select: {
+          name: true,
+          id: true,
+          state: true,
+          items: {
+            select: {
+              item: {
+                select: {
+                  category: { select: { name: true } },
+                  id: true,
+                  name: true,
                 },
-                checked: true,
-                amount: true,
-                id: true,
               },
+              checked: true,
+              amount: true,
+              id: true,
             },
           },
+        },
+      });
+
+      if (!list) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'List was not found',
         });
+      }
 
-        if (!list) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'List was not found',
-          });
-        }
-
-        return formatListToContainItemsWithData(list);
-      } catch (e) {}
+      return formatListToContainItemsWithData(list);
     }),
   getCurrentListId: userProtectedProcedure.query(async ({ ctx }) => {
     const currentList = await ctx.prisma.list.findFirst({
@@ -178,18 +165,10 @@ export const listRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      try {
-        await ctx.prisma.listItem.update({
-          where: { id: input.itemId },
-          data: { checked: input.value },
-        });
-      } catch (e) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Unexpected error when toggling item occured',
-          cause: e,
-        });
-      }
+      await ctx.prisma.listItem.update({
+        where: { id: input.itemId },
+        data: { checked: input.value },
+      });
     }),
   updateListName: userProtectedProcedure
     .input(
@@ -199,45 +178,29 @@ export const listRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      try {
-        await ctx.prisma.list.update({
-          where: { id: input.listId },
-          data: { name: input.name },
-        });
-      } catch (e) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'There was a problem updating your list name',
-          cause: e,
-        });
-      }
+      await ctx.prisma.list.update({
+        where: { id: input.listId },
+        data: { name: input.name },
+      });
     }),
   changeStatus: userProtectedProcedure
     .input(z.object({ status: z.enum(['cancelled', 'current', 'completed']) }))
     .mutation(async ({ ctx, input }) => {
-      try {
-        const listWithId = await ctx.prisma.list.findFirst({
-          where: { userId: ctx.user.id, state: 'current' },
-          select: { id: true },
-        });
+      const listWithId = await ctx.prisma.list.findFirst({
+        where: { userId: ctx.user.id, state: 'current' },
+        select: { id: true },
+      });
 
-        if (!listWithId || !listWithId.id) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: "User doesn't have current list",
-          });
-        }
-
-        await ctx.prisma.list.update({
-          where: { id: listWithId.id },
-          data: { state: input.status },
-        });
-      } catch (e) {
+      if (!listWithId || !listWithId.id) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Unnexprected Error occured while updating list',
-          cause: e,
+          code: 'BAD_REQUEST',
+          message: "User doesn't have current list",
         });
       }
+
+      await ctx.prisma.list.update({
+        where: { id: listWithId.id },
+        data: { state: input.status },
+      });
     }),
 });
