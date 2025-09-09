@@ -19,14 +19,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <UserContextProvider>
-          <ModalContextProvider>
-            <SidebarContextProvider>
+          <SidebarContextProvider>
+            <ModalContextProvider>
               <Layout>
                 <Toaster />
                 <Component {...pageProps} />
               </Layout>
-            </SidebarContextProvider>
-          </ModalContextProvider>
+            </ModalContextProvider>
+          </SidebarContextProvider>
         </UserContextProvider>
       </PersistGate>
     </ReduxProvider>
