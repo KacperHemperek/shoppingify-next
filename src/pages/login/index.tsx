@@ -114,7 +114,7 @@ function RegisterFormContent() {
     mutate: signUp,
     isLoading: signingUp,
     error: signUpError,
-  } = api.user.signIn.useMutation({
+  } = api.user.signUp.useMutation({
     onSuccess: () => {
       utils.user.getUserFromSession.invalidate();
       router.push('/');
