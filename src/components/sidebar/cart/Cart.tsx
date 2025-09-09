@@ -107,6 +107,7 @@ export default function Cart() {
           {!items.length && (
             <span>
               You don’t have any items,{' '}
+              {/* FIXME: update Add some link to redirect to item creation */}
               <Link className="font-medium text-primary underline" href="/">
                 Add some
               </Link>

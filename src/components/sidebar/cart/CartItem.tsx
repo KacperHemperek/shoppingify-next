@@ -44,29 +44,34 @@ const CartItem = forwardRef(
         initial={{ opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -10, opacity: 0 }}
-        className="group flex h-full items-center
-        justify-between"
+        className="group flex h-full items-start justify-between flex-col max-w-full lg:flex-row lg:items-center"
       >
-        <h4 className="truncate text-lg font-medium">{name}</h4>{' '}
-        <div className="flex items-center gap-2 rounded-lg py-1 pr-2 text-primary group-hover:bg-white group-hover:py-0 md:py-2 md:pr-2">
+        <h4 className="truncate text-lg font-medium max-w-full">{name}</h4>{' '}
+        <div className="flex items-center gap-2 rounded-lg py-1 pr-2 text-primary lg:group-hover:bg-white lg:group-hover:py-0 lg:py-2 lg:pr-2">
           <button
             onClick={removeItemFromList}
-            className="hidden rounded-lg bg-primary px-1 py-2 group-hover:block md:px-2 md:py-3 "
+            className="hidden rounded-lg bg-primary px-1 py-2 lg:group-hover:block lg:hidden lg:px-2 lg:py-3 "
           >
-            <TrashIcon className="h-6 w-6 text-white" />
+            <TrashIcon className="h-6 w-6 text-neutral-extralight" />
           </button>{' '}
           <button
             onClick={handleDecrementAmount}
-            className="hidden transition-all group-hover:block"
+            className="transition-all lg:group-hover:block lg:hidden"
           >
             <MinusIcon className="h-6 w-6 " />
           </button>{' '}
           <ItemAmount amount={amount} />
           <button
             onClick={handleIncrementAmount}
-            className="hidden transition-all group-hover:block"
+            className="transition-all lg:group-hover:block lg:hidden"
           >
             <PlusIcon className="h-6 w-6 " />
+          </button>{' '}
+          <button
+            onClick={removeItemFromList}
+            className="rounded-lg p-1 -ml-1 lg:hidden"
+          >
+            <TrashIcon className="h-5 w-5 text-danger" />
           </button>{' '}
         </div>
       </motion.div>
