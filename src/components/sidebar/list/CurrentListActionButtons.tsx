@@ -81,7 +81,7 @@ function ConfirmCancelListModal() {
           onClick={onListCancel}
           disabled={isLoading}
         >
-          Yes, I'm sure
+          Yes, I&apos;m sure
         </button>
       </div>
     </div>

@@ -1,5 +1,3 @@
-import { TRPCError } from '@trpc/server';
-
 import { createTRPCRouter, userProtectedProcedure } from '@/server/api/trpc';
 
 export const chartsRouter = createTRPCRouter({

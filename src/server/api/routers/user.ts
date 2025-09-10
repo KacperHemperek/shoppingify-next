@@ -69,6 +69,7 @@ export const userRouter = createTRPCRouter({
       });
 
       ctx.setCookie('session', newSession.id);
+      /* eslint-disable @typescript-eslint/no-unused-vars */
       const { password: _, ...userWithoutPassword } = user;
 
       return userWithoutPassword;
