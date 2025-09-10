@@ -1,3 +1,6 @@
+import { getHTTPStatusCodeFromError } from '@trpc/server/http';
+import { toast } from 'react-hot-toast';
+
 import useSidebar from '@/hooks/useSidebar';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -23,6 +26,9 @@ function ItemInfo() {
       utils.item.getAll.invalidate();
       setSidebarOption('cart');
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 
   const { hide } = useSidebar();
@@ -32,6 +38,7 @@ function ItemInfo() {
   }
 
   function deleteItem(itemId: number, categoryName: string) {
+    console.log('deleting item', itemId, categoryName);
     deleteItemMutation({ itemId, categoryName });
   }
 
@@ -94,7 +101,7 @@ function ItemInfo() {
             setSidebarOption(undefined);
           }}
         >
-          delete
+          Delete
         </button>
         {/* desktop button */}
         <button
@@ -102,7 +109,7 @@ function ItemInfo() {
           className="hidden rounded-xl px-6 py-4 font-medium shadow-danger/30 transition hover:scale-[101%] hover:bg-danger hover:text-white hover:shadow-md md:block"
           onClick={() => deleteItem(item.id, item.category)}
         >
-          delete
+          Delete
         </button>
         <button
           type="submit"

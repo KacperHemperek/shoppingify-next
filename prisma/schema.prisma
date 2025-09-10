@@ -48,8 +48,9 @@ model Item {
   name      String
   desc      String
 
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id])
   categoryId Int
+  deletedAt  DateTime?
 }
 
 enum ListState {

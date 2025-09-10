@@ -20,7 +20,10 @@ export const itemRouter = createTRPCRouter({
         where: { userId: ctx.user.id },
         select: {
           id: true,
-          items: { select: { id: true, name: true, desc: true } },
+          items: {
+            select: { id: true, name: true, desc: true },
+            where: { deletedAt: null },
+          },
           name: true,
         },
       });
@@ -69,23 +72,10 @@ export const itemRouter = createTRPCRouter({
   delete: userProtectedProcedure
     .input(z.object({ itemId: z.number(), categoryName: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const itemId = await ctx.prisma.$transaction(async (prisma) => {
-        const category = await prisma.category.findFirst({
-          where: { userId: ctx.user.id, name: input.categoryName },
-          select: { id: true, items: true },
-        });
-
-        if (category?.items && category?.items.length <= 1) {
-          await prisma.item.delete({ where: { id: input.itemId } });
-          await prisma.category.delete({ where: { id: category.id } });
-          return input.itemId;
-        }
-        await prisma.item.delete({ where: { id: input.itemId } });
-        return input.itemId;
+      const updatedItem = await ctx.prisma.item.update({
+        where: { id: input.itemId },
+        data: { deletedAt: new Date() },
       });
-
-      return {
-        itemId,
-      };
+      return updatedItem;
     }),
 });
